@@ -20,7 +20,7 @@ declare global {
 }
 
 const Login = (props: Props) => {
-  const [phone, setPhone] = useState("8333835533");
+  const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
 
   const [isOtpSent, setIsOtpSent] = useState<boolean>(false);

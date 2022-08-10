@@ -1,0 +1,33 @@
+.root {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 320px;
+}
+
+.loginCard {
+  max-width: 320px;
+  padding: 24px;
+}
+
+.title {
+  text-align: center;
+}
+
+.inputField {
+  margin-top: 16px;
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.errorMessage {
+  text-align: center;
+  margin-top: 16px;
+}

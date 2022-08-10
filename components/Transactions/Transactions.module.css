@@ -1,0 +1,45 @@
+.root {
+  margin-top: 24px;
+}
+
+.transactions {
+  margin: 24px 0;
+}
+
+.transaction {
+  padding: 16px 24px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.accountIcon {
+  margin-right: 4px;
+}
+
+.date {
+  font-size: 12px;
+}
+
+.formFields {
+  max-width: 420px;
+}
+
+.field {
+  margin-top: 12px;
+}
+
+.switchField {
+  display: flex;
+  margin-top: 12px;
+  align-items: center;
+  justify-content: space-between;
+}

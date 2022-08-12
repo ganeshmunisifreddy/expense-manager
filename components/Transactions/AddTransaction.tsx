@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Card, Button, Input, Switch } from "@nextui-org/react";
-import { Modal, Text, Row, Checkbox } from "@nextui-org/react";
+import { Button, Input, Switch } from "@nextui-org/react";
+import { Modal, Text } from "@nextui-org/react";
 import { collection, addDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import styles from "./Transactions.module.css";
 import { db } from "../../firebase/config";
@@ -36,15 +36,15 @@ const AddTransaction = (props: any) => {
   const txnCollectionRef = collection(db, "expenses");
 
   useEffect(() => {
-    let transaction = transactions.find((item: any) => item.id === transactionId);
+    const transaction = transactions.find((item: any) => item.id === transactionId);
     if (transaction) {
       setNewTransaction(transaction);
     }
-  }, [transactionId]);
+  }, [transactionId, transactions]);
 
   const handleChange = (e: any) => {
-    let { name, value } = e.target;
-    let obj = {
+    const { name, value } = e.target;
+    const obj = {
       ...newTransaction,
       [name]: value,
     };
@@ -52,7 +52,7 @@ const AddTransaction = (props: any) => {
   };
 
   const handleSwitch = (name: string, checked: boolean) => {
-    let obj = {
+    const obj = {
       ...newTransaction,
       [name]: checked,
     };
@@ -64,16 +64,16 @@ const AddTransaction = (props: any) => {
     //return console.log(newTransaction);
     if (transactionId) {
       // Edit mode
-      let txnIdx = transactions.findIndex((item: any) => item.id === transactionId);
+      const txnIdx = transactions.findIndex((item: any) => item.id === transactionId);
       if (txnIdx > -1) {
-        let docRef = doc(db, "expenses", transactionId);
+        const docRef = doc(db, "expenses", transactionId);
         let updatedTxn = {
           ...newTransaction,
           updatedAt: serverTimestamp(),
         };
         updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt"]);
         await updateDoc(docRef, updatedTxn);
-        let allTxns = [...transactions];
+        const allTxns = [...transactions];
         allTxns[txnIdx] = newTransaction;
         setTransactions(allTxns);
         handleEditMode("");
@@ -82,13 +82,13 @@ const AddTransaction = (props: any) => {
         onClose(true);
       }
     } else {
-      let newTxn = {
+      const newTxn = {
         ...newTransaction,
         createdBy: currentUser?.uid,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
-      let data = await addDoc(txnCollectionRef, newTxn);
+      const data = await addDoc(txnCollectionRef, newTxn);
       setTransactions([...transactions, { ...newTxn, id: data.id }]);
       setNewTransaction({ ...initialTransaction });
       toggleLoading(false);

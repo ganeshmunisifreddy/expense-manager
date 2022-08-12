@@ -10,7 +10,7 @@ import {
   limit,
   where,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Text, Container, Button, Card } from "@nextui-org/react";
 import { HomeIcon, UserIcon } from "@heroicons/react/outline";
 import { signOut } from "firebase/auth";
@@ -25,9 +25,9 @@ import styles from "../styles/Home.module.css";
 import Header from "../components/Header";
 import Transactions from "../components/Transactions";
 
-const Home: NextPage = () => {
-  const txnCollectionRef = collection(db, "expenses");
+const txnCollectionRef = collection(db, "expenses");
 
+const Home: NextPage = () => {
   const [transactions, setTransactions] = useState<any>([]);
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -35,30 +35,16 @@ const Home: NextPage = () => {
 
   const { currentUser }: any = useAuth();
 
+  const userId: string = currentUser.uid || "";
+
   const router = useRouter();
 
-  const getTransactions = async () => {
-    setIsLoading(true);
-    const q = query(
-      txnCollectionRef,
-      orderBy("date", "asc"),
-      // where("date", ">=", "2022-08-01"),
-      // where("date", "<=", "2022-08-31"),
-      where("createdBy", "==", currentUser?.uid),
-      limit(10),
-    );
-    const data = await getDocs(q);
-    let transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
-    setTransactions(transactions);
-    setIsLoading(false);
-  };
-
   const handleDelete = async (id: string) => {
-    let isConfirm = confirm("Are you sure, you want to delete?");
+    const isConfirm = confirm("Are you sure, you want to delete?");
     if (isConfirm) {
       setIsLoading(true);
       try {
-        let docRef = doc(db, "expenses", id);
+        const docRef = doc(db, "expenses", id);
         await deleteDoc(docRef);
         setIsLoading(false);
         getTransactions();
@@ -94,13 +80,30 @@ const Home: NextPage = () => {
     setIsOpen(false);
   };
 
+  const getTransactions = useCallback(async () => {
+    console.log("called getTransactions");
+    setIsLoading(true);
+    const q = query(
+      txnCollectionRef,
+      orderBy("date", "asc"),
+      // where("date", ">=", "2022-08-01"),
+      // where("date", "<=", "2022-08-31"),
+      where("createdBy", "==", userId),
+      limit(10),
+    );
+    const data = await getDocs(q);
+    const transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
+    setTransactions(transactions);
+    setIsLoading(false);
+  }, [userId]);
+
   useEffect(() => {
-    if (currentUser) {
+    if (userId) {
       getTransactions();
     } else {
       router.push("/login");
     }
-  }, []);
+  }, [userId, router, getTransactions]);
 
   return (
     <Container className={styles.container}>

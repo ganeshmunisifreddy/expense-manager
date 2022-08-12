@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-const OfflinePage = (props: Props) => {
+const OfflinePage = () => {
   return <div>OfflinePage</div>;
 };
 

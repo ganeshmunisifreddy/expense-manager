@@ -6,12 +6,12 @@ import { CreditCardIcon, DotsVerticalIcon } from "@heroicons/react/outline";
 import styles from "./Transactions.module.css";
 import { convertTimeToMeridiem } from "../../utils/common";
 
-let RupeeIndian = Intl.NumberFormat("en-IN", {
+const RupeeIndian = Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",
 });
 
-let formatDateText = (date: string, time: string) => {
+const formatDateText = (date: string, time: string) => {
   if (new Date(date).toLocaleDateString() === new Date().toLocaleDateString()) {
     return "Today, " + convertTimeToMeridiem(time);
   }

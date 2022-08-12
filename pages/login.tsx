@@ -9,8 +9,6 @@ import { useAuth } from "../context/AuthContext";
 
 import styles from "../styles/Login.module.css";
 
-type Props = {};
-
 declare global {
   interface Window {
     recaptchaVerifier: any;
@@ -19,7 +17,7 @@ declare global {
   }
 }
 
-const Login = (props: Props) => {
+const Login = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
 
@@ -41,7 +39,7 @@ const Login = (props: Props) => {
       "recaptcha-container",
       {
         size: "invisible",
-        callback: (response: any) => {
+        callback: () => {
           console.log("captcha solved");
         },
         errorCallback: (response: any) => {
@@ -60,7 +58,7 @@ const Login = (props: Props) => {
     setErrMsg("");
     setIsLoading(true);
     generateRecaptcha();
-    let appVerifier = window.recaptchaVerifier;
+    const appVerifier = window.recaptchaVerifier;
     signInWithPhoneNumber(auth, "+91" + phone, appVerifier)
       .then((confirmationResult) => {
         setIsOtpSent(true);
@@ -79,7 +77,7 @@ const Login = (props: Props) => {
     if (otp.length !== 6) {
       return setErrMsg("Please enter valid OTP");
     }
-    let confirmationResult = window.confirmationResult;
+    const confirmationResult = window.confirmationResult;
     confirmationResult
       .confirm(otp)
       .then((result: any) => {
@@ -97,7 +95,7 @@ const Login = (props: Props) => {
     if (currentUser) {
       router.push("/");
     }
-  }, []);
+  }, [currentUser, router]);
 
   return (
     <div className={styles.root}>

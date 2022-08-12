@@ -120,7 +120,7 @@ const Login = () => {
               }}
             />
           </div>
-          {!isOtpSent && (
+          {isOtpSent && (
             <div className={styles.inputField}>
               <TextField
                 size="small"
@@ -130,6 +130,7 @@ const Login = () => {
                 value={otp}
                 fullWidth
                 onChange={(e: any) => setOtp(e.target.value)}
+                required
               />
             </div>
           )}

@@ -35,7 +35,7 @@ const Home: NextPage = () => {
 
   const { currentUser }: any = useAuth();
 
-  const userId: string = currentUser.uid || "";
+  const userId: string = currentUser?.uid || "";
 
   const router = useRouter();
 

@@ -15,7 +15,7 @@ import styles from "./Transactions.module.scss";
 import { db } from "../../firebase/config";
 import { format } from "date-fns";
 import { deleteKeys } from "../../utils/common";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 const initialTransaction = {
   account: "",

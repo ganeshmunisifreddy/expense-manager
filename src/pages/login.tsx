@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { auth } from "../firebase/config";
 import Loader from "../components/Loader/Loader";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 import styles from "../styles/Login.module.scss";
 
@@ -74,6 +74,7 @@ const Login = () => {
 
   const verifyOtp = () => {
     setErrMsg("");
+    setIsLoading(true);
     if (otp.length !== 6) {
       return setErrMsg("Please enter valid OTP");
     }
@@ -81,11 +82,13 @@ const Login = () => {
     confirmationResult
       .confirm(otp)
       .then((result: any) => {
+        setIsLoading(false);
         console.log(result);
         //const user = result.user;
         router.push("/");
       })
       .catch((error: any) => {
+        setIsLoading(false);
         setErrMsg(error.message);
         console.log("Error Message####", error.message);
       });
@@ -106,7 +109,6 @@ const Login = () => {
           </Typography>
           <div className={styles.inputField}>
             <TextField
-              size="small"
               type="text"
               label="Phone Number"
               placeholder="98765 43210"
@@ -123,7 +125,6 @@ const Login = () => {
           {isOtpSent && (
             <div className={styles.inputField}>
               <TextField
-                size="small"
                 type="number"
                 label="OTP"
                 placeholder="Enter OTP"
@@ -137,7 +138,7 @@ const Login = () => {
           <div className={styles.inputField}>
             {isOtpSent ? (
               <Button variant="contained" className={styles.submitBtn} onClick={verifyOtp}>
-                Verify
+                {isLoading ? <Loader size={20} /> : "Verify"}
               </Button>
             ) : (
               <Button
@@ -145,7 +146,7 @@ const Login = () => {
                 className={styles.submitBtn}
                 onClick={getOtp}
                 disabled={isLoading}>
-                {isLoading ? <Loader size="sm" /> : "Login"}
+                {isLoading ? <Loader size={20} /> : "Login"}
               </Button>
             )}
           </div>

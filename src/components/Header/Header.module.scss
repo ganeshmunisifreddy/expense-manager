@@ -1,7 +1,10 @@
+@import '../../styles/variables.scss';
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: white;
-  padding: 24px;
+  padding: 16px 24px;
+  box-shadow: $box-shadow;
 }

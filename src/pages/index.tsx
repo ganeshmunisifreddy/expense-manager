@@ -19,7 +19,7 @@ import { useRouter } from "next/router";
 import { db, auth } from "../firebase/config";
 import AddTransaction from "../components/Transactions/AddTransaction";
 import Loader from "../components/Loader/Loader";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 import styles from "../styles/Home.module.scss";
 import Header from "../components/Header";

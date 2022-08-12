@@ -1,11 +1,11 @@
 export const deleteKey = (obj: any, key: string) => {
-  let newObj = { ...obj };
+  const newObj = { ...obj };
   delete newObj[key];
   return newObj;
 }
 
 export const deleteKeys = (obj: any, keys: string[]) => {
-  let newObj = { ...obj };
+  const newObj = { ...obj };
   keys.forEach((key: string) => {
     delete newObj[key];
   })
@@ -13,9 +13,8 @@ export const deleteKeys = (obj: any, keys: string[]) => {
 }
 
 export const convertTimeToMeridiem = (time: string) => {
-  let text = "";
-  let [hours, minutes] = time.split(":").map(Number);
-  let AmOrPm = hours >= 12 ? 'pm' : 'am';
-  hours = (hours % 12) || 12;
-  return `${hours}:${minutes} ${AmOrPm}`;
+  const [h, m] = time.split(":").map(Number);
+  const AmOrPm = h >= 12 ? 'pm' : 'am';
+  const hours = (h % 12) || 12;
+  return `${hours}:${m} ${AmOrPm}`;
 }

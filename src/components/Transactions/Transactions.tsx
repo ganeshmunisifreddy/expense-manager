@@ -31,6 +31,7 @@ const Transactions = (props: any) => {
   };
 
   const handleAction = (key: string, id: string) => {
+    handleClose();
     switch (key) {
       case "edit":
         return handleEditMode(id);
@@ -39,7 +40,6 @@ const Transactions = (props: any) => {
       default:
         break;
     }
-    handleClose();
   };
 
   return (

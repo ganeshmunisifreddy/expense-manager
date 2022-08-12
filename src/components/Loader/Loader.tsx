@@ -4,7 +4,7 @@ import styles from "./Loader.module.scss";
 
 type Props = {
   fullScreen?: boolean;
-  size?: any;
+  size?: number;
   color?: any;
 };
 

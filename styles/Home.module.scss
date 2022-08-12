@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -23,14 +25,18 @@
 .cards p {
   margin-top: 12px;
   color: #212b36;
-  font-weight: bold;
+  //font-weight: bold;
 }
 
 .myExpenses,
 .homeExpenses {
   display: flex;
   align-items: center;
+  flex-direction: column;
+  flex: 1;
   padding: 32px 16px;
+  box-shadow: $box-shadow;
+  border-radius: 12px;
 }
 
 /* .myExpenses {

@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .root {
   margin-top: 24px;
 }
@@ -13,6 +15,14 @@
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
+  border-radius: 12px;
+  box-shadow: $box-shadow;
+}
+
+.description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .account {
@@ -30,11 +40,12 @@
 }
 
 .formFields {
-  max-width: 420px;
+  min-width: 260px;
+  width: 100%;
 }
 
 .field {
-  margin-top: 12px;
+  margin-top: 20px;
 }
 
 .switchField {

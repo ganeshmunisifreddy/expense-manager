@@ -1,9 +1,17 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Button, Input, Switch } from "@nextui-org/react";
-import { Modal, Text } from "@nextui-org/react";
+import {
+  Button,
+  Switch,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+  TextField,
+} from "@mui/material";
 import { collection, addDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
-import styles from "./Transactions.module.css";
+import styles from "./Transactions.module.scss";
 import { db } from "../../firebase/config";
 import { format } from "date-fns";
 import { deleteKeys } from "../../utils/common";
@@ -21,7 +29,7 @@ const initialTransaction = {
 const AddTransaction = (props: any) => {
   const {
     transactions,
-    setTransactions,
+    getTransactions,
     transactionId = "",
     toggleLoading,
     handleEditMode,
@@ -59,6 +67,14 @@ const AddTransaction = (props: any) => {
     setNewTransaction(obj);
   };
 
+  const resetTransaction = () => {
+    handleEditMode("");
+    setNewTransaction({ ...initialTransaction });
+    toggleLoading(false);
+    onClose();
+    getTransactions();
+  };
+
   const handleSave = async () => {
     toggleLoading(true);
     //return console.log(newTransaction);
@@ -73,13 +89,7 @@ const AddTransaction = (props: any) => {
         };
         updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt"]);
         await updateDoc(docRef, updatedTxn);
-        const allTxns = [...transactions];
-        allTxns[txnIdx] = newTransaction;
-        setTransactions(allTxns);
-        handleEditMode("");
-        setNewTransaction({ ...initialTransaction });
-        toggleLoading(false);
-        onClose(true);
+        resetTransaction();
       }
     } else {
       const newTxn = {
@@ -88,23 +98,21 @@ const AddTransaction = (props: any) => {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
-      const data = await addDoc(txnCollectionRef, newTxn);
-      setTransactions([...transactions, { ...newTxn, id: data.id }]);
-      setNewTransaction({ ...initialTransaction });
-      toggleLoading(false);
-      onClose(true);
+      await addDoc(txnCollectionRef, newTxn);
+      resetTransaction();
     }
   };
 
   return (
-    <Modal open={open} onClose={onClose} blur closeButton preventClose>
-      <Modal.Header>
-        <Text h5>{transactionId ? "Edit Expense" : "Add Expense"}</Text>
-      </Modal.Header>
-      <Modal.Body>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>
+        <Typography variant="h6">{transactionId ? "Edit Expense" : "Add Expense"}</Typography>
+      </DialogTitle>
+      <DialogContent>
         <div className={styles.formFields}>
           <div className={styles.field}>
-            <Input
+            <TextField
+              size="small"
               label="Account"
               type="text"
               placeholder="Enter Account"
@@ -115,7 +123,8 @@ const AddTransaction = (props: any) => {
             />
           </div>
           <div className={styles.field}>
-            <Input
+            <TextField
+              size="small"
               label="Amount"
               type="number"
               placeholder="Enter Amount"
@@ -126,7 +135,8 @@ const AddTransaction = (props: any) => {
             />
           </div>
           <div className={styles.field}>
-            <Input
+            <TextField
+              size="small"
               label="Description"
               type="text"
               placeholder="Enter Description"
@@ -137,7 +147,8 @@ const AddTransaction = (props: any) => {
             />
           </div>
           <div className={styles.field}>
-            <Input
+            <TextField
+              size="small"
               label="Date"
               type="date"
               name="date"
@@ -147,7 +158,8 @@ const AddTransaction = (props: any) => {
             />
           </div>
           <div className={styles.field}>
-            <Input
+            <TextField
+              size="small"
               label="Time"
               type="time"
               name="time"
@@ -164,16 +176,16 @@ const AddTransaction = (props: any) => {
             />
           </div>
         </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button auto light color="error" onClick={onClose}>
+      </DialogContent>
+      <DialogActions>
+        <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button auto shadow onClick={handleSave}>
+        <Button variant="contained" onClick={handleSave}>
           {newTransaction.id ? "Update" : "Save"}
         </Button>
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

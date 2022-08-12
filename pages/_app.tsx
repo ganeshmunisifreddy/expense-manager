@@ -1,16 +1,37 @@
-import "../styles/globals.css";
+import "../styles/globals.scss";
 import type { AppProps } from "next/app";
-import { NextUIProvider } from "@nextui-org/react";
+import Head from "next/head";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import dynamic from "next/dynamic";
+
+import { CacheProvider, EmotionCache } from "@emotion/react";
+import theme from "../mui/theme";
+import createEmotionCache from "../mui/createEmotionCache";
 import AuthProvider from "../context/AuthContext";
 
-function MyApp({ Component, pageProps }: AppProps) {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+function MyApp(props: MyAppProps) {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   return (
-    <NextUIProvider>
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
-    </NextUIProvider>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+        <CssBaseline />
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
 

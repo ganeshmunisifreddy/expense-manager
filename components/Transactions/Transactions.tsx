@@ -1,9 +1,9 @@
 import React from "react";
-import { Text, Dropdown, Card } from "@nextui-org/react";
+import { Typography, IconButton, Card, Menu, MenuItem } from "@mui/material";
 import { format } from "date-fns";
 import { CreditCardIcon, DotsVerticalIcon } from "@heroicons/react/outline";
 
-import styles from "./Transactions.module.css";
+import styles from "./Transactions.module.scss";
 import { convertTimeToMeridiem } from "../../utils/common";
 
 const RupeeIndian = Intl.NumberFormat("en-IN", {
@@ -21,6 +21,15 @@ const formatDateText = (date: string, time: string) => {
 const Transactions = (props: any) => {
   const { data = [], handleEditMode, handleDelete } = props;
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleAction = (key: string, id: string) => {
     switch (key) {
       case "edit":
@@ -30,54 +39,56 @@ const Transactions = (props: any) => {
       default:
         break;
     }
+    handleClose();
   };
 
   return (
     <div className={styles.root}>
-      <Text h5>Transactions</Text>
+      <Typography variant="h6">Transactions</Typography>
       <div className={styles.transactions}>
         {data?.length > 0 && (
           <div>
             {data.map((txn: any, index: number) => (
               <Card key={txn.id + "-" + index} className={styles.transaction}>
-                <div style={{ flex: 5 }}>
-                  <Text b>{txn.description}</Text>
-                  <Text className={styles.account}>
+                <div style={{ flex: 6, overflow: "hidden" }}>
+                  <Typography className={styles.description}>{txn.description}</Typography>
+                  <Typography className={styles.account}>
                     <CreditCardIcon height={16} color="#0272F5" className={styles.accountIcon} />
                     {txn.account}
-                  </Text>
+                  </Typography>
                 </div>
-                <div style={{ flex: 5 }} className="text-right">
-                  <Text className={styles.date}>{formatDateText(txn.date, txn.time)}</Text>
-                  <Text b color="primary">
-                    {RupeeIndian.format(txn.amount)}
-                  </Text>
+                <div style={{ flex: 3 }} className="text-right">
+                  <Typography className={styles.date}>
+                    {formatDateText(txn.date, txn.time)}
+                  </Typography>
+                  <Typography color="primary">{RupeeIndian.format(txn.amount)}</Typography>
                 </div>
                 <div style={{ flex: 1, textAlign: "right", cursor: "pointer" }}>
-                  <Dropdown>
-                    <Dropdown.Trigger>
-                      <DotsVerticalIcon
-                        height={16}
-                        color="#0272F5"
-                        className={styles.accountIcon}
-                      />
-                    </Dropdown.Trigger>
-                    <Dropdown.Menu onAction={(key: any) => handleAction(key, txn.id)}>
-                      <Dropdown.Item key="edit">Edit</Dropdown.Item>
-                      <Dropdown.Item key="delete" withDivider color="error">
-                        Delete
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
+                  <IconButton onClick={handleClick} style={{ marginLeft: 8 }}>
+                    <DotsVerticalIcon height={16} color="#0272F5" />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                      "aria-labelledby": "basic-button",
+                    }}>
+                    <MenuItem onClick={() => handleAction("edit", txn.id)}>Edit</MenuItem>
+                    <MenuItem onClick={() => handleAction("delete", txn.id)} color="error">
+                      Delete
+                    </MenuItem>
+                  </Menu>
                 </div>
               </Card>
             ))}
           </div>
         )}
+
         {data?.length === 0 && (
-          <Text h4 css={{ textAlign: "center" }}>
+          <Typography variant="h6" style={{ textAlign: "center" }}>
             No Transactions
-          </Text>
+          </Typography>
         )}
       </div>
       {/* <Button size="sm">Add Expense</Button> */}

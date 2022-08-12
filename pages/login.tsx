@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Input, Text, Button } from "@nextui-org/react";
+import { Card, InputAdornment, TextField, Typography, Button } from "@mui/material";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { useRouter } from "next/router";
 
@@ -7,7 +7,7 @@ import { auth } from "../firebase/config";
 import Loader from "../components/Loader/Loader";
 import { useAuth } from "../context/AuthContext";
 
-import styles from "../styles/Login.module.css";
+import styles from "../styles/Login.module.scss";
 
 declare global {
   interface Window {
@@ -101,14 +101,13 @@ const Login = () => {
     <div className={styles.root}>
       <div className={styles.container}>
         <Card className={styles.loginCard}>
-          <Text h4 className={styles.title}>
+          <Typography variant="h6" className={styles.title}>
             Login
-          </Text>
+          </Typography>
           <div className={styles.inputField}>
-            <Input
-              bordered
+            <TextField
+              size="small"
               type="text"
-              labelLeft="+91"
               label="Phone Number"
               placeholder="98765 43210"
               value={phone}
@@ -116,11 +115,15 @@ const Login = () => {
               onChange={(e: any) => setPhone(e.target.value)}
               required
               disabled={isOtpSent || isLoading}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">+91</InputAdornment>,
+              }}
             />
           </div>
-          {isOtpSent && (
+          {!isOtpSent && (
             <div className={styles.inputField}>
-              <Input
+              <TextField
+                size="small"
                 type="number"
                 label="OTP"
                 placeholder="Enter OTP"
@@ -132,20 +135,24 @@ const Login = () => {
           )}
           <div className={styles.inputField}>
             {isOtpSent ? (
-              <Button className={styles.submitBtn} onClick={verifyOtp}>
+              <Button variant="contained" className={styles.submitBtn} onClick={verifyOtp}>
                 Verify
               </Button>
             ) : (
-              <Button className={styles.submitBtn} onClick={getOtp} disabled={isLoading}>
+              <Button
+                variant="contained"
+                className={styles.submitBtn}
+                onClick={getOtp}
+                disabled={isLoading}>
                 {isLoading ? <Loader size="sm" /> : "Login"}
               </Button>
             )}
           </div>
         </Card>
         {errMsg && (
-          <Text color="error" className={styles.errorMessage}>
+          <Typography color="error" className={styles.errorMessage}>
             {errMsg}
-          </Text>
+          </Typography>
         )}
       </div>
       <div id="recaptcha-container"></div>

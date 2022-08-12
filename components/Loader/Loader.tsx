@@ -1,6 +1,6 @@
 import React from "react";
-import { Loading } from "@nextui-org/react";
-import styles from "./Loader.module.css";
+import { CircularProgress } from "@mui/material";
+import styles from "./Loader.module.scss";
 
 type Props = {
   fullScreen?: boolean;
@@ -13,11 +13,11 @@ const Loader = (props: Props) => {
   if (fullScreen) {
     return (
       <div className={styles.overlay}>
-        <Loading {...rest} />
+        <CircularProgress {...rest} />
       </div>
     );
   }
-  return <Loading {...rest} />;
+  return <CircularProgress {...rest} />;
 };
 
 export default Loader;

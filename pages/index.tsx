@@ -11,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState, useCallback } from "react";
-import { Text, Container, Button, Card } from "@nextui-org/react";
+import { Typography, Container, Button, Card } from "@mui/material";
 import { HomeIcon, UserIcon } from "@heroicons/react/outline";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -21,7 +21,7 @@ import AddTransaction from "../components/Transactions/AddTransaction";
 import Loader from "../components/Loader/Loader";
 import { useAuth } from "../context/AuthContext";
 
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Home.module.scss";
 import Header from "../components/Header";
 import Transactions from "../components/Transactions";
 
@@ -73,10 +73,7 @@ const Home: NextPage = () => {
 
   const openModal = () => setIsOpen(true);
 
-  const closeModal = (isFetch: boolean) => {
-    if (isFetch) {
-      getTransactions();
-    }
+  const closeModal = () => {
     setIsOpen(false);
   };
 
@@ -120,15 +117,15 @@ const Home: NextPage = () => {
         <div className={styles.cards}>
           <Card className={styles.myExpenses}>
             <UserIcon height={32} color="#212b36" />
-            <Text>My Expenses</Text>
+            <Typography>My Expenses</Typography>
           </Card>
           <Card className={styles.homeExpenses}>
             <HomeIcon height={32} color="#212b36" />
-            <Text>Home Expenses</Text>
+            <Typography>Home Expenses</Typography>
           </Card>
         </div>
         <div className="flex justify-center">
-          <Button size="sm" css={{ width: "100%" }} onClick={openModal}>
+          <Button size="small" variant="contained" style={{ width: "100%" }} onClick={openModal}>
             Add Expense
           </Button>
         </div>
@@ -141,7 +138,7 @@ const Home: NextPage = () => {
       {isOpen && (
         <AddTransaction
           transactions={transactions}
-          setTransactions={setTransactions}
+          getTransactions={getTransactions}
           transactionId={transactionId}
           toggleLoading={toggleLoading}
           handleEditMode={handleEditMode}

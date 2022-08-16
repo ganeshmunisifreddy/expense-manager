@@ -18,3 +18,15 @@ export const convertTimeToMeridiem = (time: string) => {
   const hours = (h % 12) || 12;
   return `${hours}:${m} ${AmOrPm}`;
 }
+
+export const stringAvatar = (text: string): string => {
+  let avatar = "";
+  if (!text) return avatar;
+  const parts = text.split(" ");
+  if (parts.length > 1) {
+    avatar = parts[0][0] + parts[1][0];
+  } else {
+    avatar = parts[0][0];
+  }
+  return avatar;
+}

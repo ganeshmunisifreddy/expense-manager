@@ -12,18 +12,17 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState, useCallback } from "react";
 import { Typography, Container, Button, Card } from "@mui/material";
-import { HomeIcon, UserIcon } from "@heroicons/react/outline";
-import { signOut } from "firebase/auth";
+import { UserGroupIcon, UserIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 
-import { db, auth } from "../firebase/config";
+import { db } from "../firebase/config";
 import AddTransaction from "../components/Transactions/AddTransaction";
 import Loader from "../components/Loader/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
 import styles from "../styles/Home.module.scss";
-import Header from "../components/Header";
 import Transactions from "../components/Transactions";
+import PrivateLayout from "../layouts/PrivateLayout";
 
 const txnCollectionRef = collection(db, "expenses");
 
@@ -62,15 +61,6 @@ const Home: NextPage = () => {
 
   const toggleLoading = (value: boolean) => setIsLoading(value);
 
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      router.push("/login");
-    } catch (e: any) {
-      console.error(e);
-    }
-  };
-
   const openModal = () => setIsOpen(true);
 
   const closeModal = () => {
@@ -78,20 +68,24 @@ const Home: NextPage = () => {
   };
 
   const getTransactions = useCallback(async () => {
-    console.log("called getTransactions");
     setIsLoading(true);
     const q = query(
       txnCollectionRef,
       orderBy("date", "asc"),
-      // where("date", ">=", "2022-08-01"),
-      // where("date", "<=", "2022-08-31"),
+      where("date", ">=", "2022-08-01"),
+      where("date", "<=", "2022-08-31"),
       where("createdBy", "==", userId),
       limit(10),
     );
-    const data = await getDocs(q);
-    const transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
-    setTransactions(transactions);
-    setIsLoading(false);
+    try {
+      const data = await getDocs(q);
+      const transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
+      setTransactions(transactions);
+    } catch (e: any) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
   }, [userId]);
 
   useEffect(() => {
@@ -103,50 +97,50 @@ const Home: NextPage = () => {
   }, [userId, router, getTransactions]);
 
   return (
-    <Container className={styles.container}>
-      <Head>
-        <title>Expense Manager</title>
-        <meta name="description" content="Expense Manager - Nine Technology" />
-      </Head>
+    <PrivateLayout>
+      <Container className={styles.container}>
+        <Head>
+          <title>Expense Manager</title>
+          <meta name="description" content="Expense Manager - Nine Technology" />
+        </Head>
 
-      {isLoading && <Loader fullScreen />}
+        {isLoading && <Loader fullScreen />}
 
-      <Header logout={logout} />
-
-      <main className={styles.main}>
-        <div className={styles.cards}>
-          <Card className={styles.myExpenses}>
-            <UserIcon height={32} color="#212b36" />
-            <Typography>My Expenses</Typography>
-          </Card>
-          <Card className={styles.homeExpenses}>
-            <HomeIcon height={32} color="#212b36" />
-            <Typography>Home Expenses</Typography>
-          </Card>
-        </div>
-        <div className="flex justify-center">
-          <Button size="small" variant="contained" style={{ width: "100%" }} onClick={openModal}>
-            Add Expense
-          </Button>
-        </div>
-        <Transactions
-          data={transactions}
-          handleDelete={handleDelete}
-          handleEditMode={handleEditMode}
-        />
-      </main>
-      {isOpen && (
-        <AddTransaction
-          transactions={transactions}
-          getTransactions={getTransactions}
-          transactionId={transactionId}
-          toggleLoading={toggleLoading}
-          handleEditMode={handleEditMode}
-          open={isOpen}
-          onClose={closeModal}
-        />
-      )}
-    </Container>
+        <main className={styles.main}>
+          <div className={styles.cards}>
+            <Card className={styles.myExpenses}>
+              <UserIcon height={32} color="#212b36" />
+              <Typography>My Expenses</Typography>
+            </Card>
+            <Card className={styles.homeExpenses}>
+              <UserGroupIcon height={32} color="#212b36" />
+              <Typography>Groups</Typography>
+            </Card>
+          </div>
+          <div className="flex justify-center">
+            <Button size="small" variant="contained" style={{ width: "100%" }} onClick={openModal}>
+              Add Expense
+            </Button>
+          </div>
+          <Transactions
+            data={transactions}
+            handleDelete={handleDelete}
+            handleEditMode={handleEditMode}
+          />
+        </main>
+        {isOpen && (
+          <AddTransaction
+            transactions={transactions}
+            getTransactions={getTransactions}
+            transactionId={transactionId}
+            toggleLoading={toggleLoading}
+            handleEditMode={handleEditMode}
+            open={isOpen}
+            onClose={closeModal}
+          />
+        )}
+      </Container>
+    </PrivateLayout>
   );
 };
 

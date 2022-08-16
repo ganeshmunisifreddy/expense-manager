@@ -8,6 +8,7 @@ import Loader from "../components/Loader/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
 import styles from "../styles/Login.module.scss";
+import Backgrounds from "../components/Backgrounds";
 
 declare global {
   interface Window {
@@ -81,9 +82,8 @@ const Login = () => {
     const confirmationResult = window.confirmationResult;
     confirmationResult
       .confirm(otp)
-      .then((result: any) => {
+      .then(() => {
         setIsLoading(false);
-        console.log(result);
         //const user = result.user;
         router.push("/");
       })
@@ -102,6 +102,7 @@ const Login = () => {
 
   return (
     <div className={styles.root}>
+      <Backgrounds text="Welcome" />
       <div className={styles.container}>
         <Card className={styles.loginCard}>
           <Typography variant="h6" className={styles.title}>

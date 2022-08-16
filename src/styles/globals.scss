@@ -1,3 +1,5 @@
+@import "./variables.scss";
+
 html,
 body {
   padding: 0;
@@ -38,4 +40,25 @@ a {
 
 .text-right {
   text-align: right;
+}
+
+@media screen and (min-width: 512px) {
+  body {
+    background: linear-gradient(25deg, #7635dc, #fafeff);
+    height: 100vh;
+    top: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  #__next {
+    max-width: 412px;
+    margin: 24px auto;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: $box-shadow;
+    height: calc(100vh - 48px);
+    background-color: #fff;
+    position: relative;
+  }
 }

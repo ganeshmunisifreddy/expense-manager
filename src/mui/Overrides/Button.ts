@@ -1,11 +1,13 @@
 const Button = {
   MuiButton: {
     styleOverrides: {
-      root: {
+      root: ({ ownerState }: any) => ({
+        ...(ownerState.variant === 'contained' && {
+          boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+        }),
         borderRadius: 8,
-        boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
         textTransform: "none"
-      },
+      }),
     },
   },
 };

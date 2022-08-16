@@ -75,9 +75,7 @@ const Transactions = (props: any) => {
                       "aria-labelledby": "basic-button",
                     }}>
                     <MenuItem onClick={() => handleAction("edit", txn.id)}>Edit</MenuItem>
-                    <MenuItem onClick={() => handleAction("delete", txn.id)} color="error">
-                      Delete
-                    </MenuItem>
+                    <MenuItem onClick={() => handleAction("delete", txn.id)}>Delete</MenuItem>
                   </Menu>
                 </div>
               </Card>

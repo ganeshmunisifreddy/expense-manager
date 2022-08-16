@@ -77,36 +77,40 @@ const AddTransaction = (props: any) => {
 
   const handleSave = async () => {
     toggleLoading(true);
-    //return console.log(newTransaction);
-    if (transactionId) {
-      // Edit mode
-      const txnIdx = transactions.findIndex((item: any) => item.id === transactionId);
-      if (txnIdx > -1) {
-        const docRef = doc(db, "expenses", transactionId);
-        let updatedTxn = {
+    try {
+      if (transactionId) {
+        // Edit mode
+        const txnIdx = transactions.findIndex((item: any) => item.id === transactionId);
+        if (txnIdx > -1) {
+          const docRef = doc(db, "expenses", transactionId);
+          let updatedTxn = {
+            ...newTransaction,
+            updatedAt: serverTimestamp(),
+          };
+          updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt"]);
+          await updateDoc(docRef, updatedTxn);
+          resetTransaction();
+        }
+      } else {
+        const newTxn = {
           ...newTransaction,
+          createdBy: currentUser?.uid || "",
+          createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         };
-        updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt"]);
-        await updateDoc(docRef, updatedTxn);
+        await addDoc(txnCollectionRef, newTxn);
         resetTransaction();
       }
-    } else {
-      const newTxn = {
-        ...newTransaction,
-        createdBy: currentUser?.uid,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      };
-      await addDoc(txnCollectionRef, newTxn);
-      resetTransaction();
+    } catch (e: any) {
+      console.error(e.message);
+      toggleLoading(false);
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>
-        <Typography variant="h6">{transactionId ? "Edit Expense" : "Add Expense"}</Typography>
+      <DialogTitle align="center">
+        <Typography>{transactionId ? "Edit Expense" : "Add Expense"}</Typography>
       </DialogTitle>
       <DialogContent>
         <div className={styles.formFields}>

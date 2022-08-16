@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import Loader from "../components/Loader";
 import { auth } from "../firebase/config";
 
 const AuthContext = React.createContext({
@@ -11,7 +12,7 @@ export function useAuth() {
 
 const AuthProvider = ({ children }: any) => {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -19,14 +20,19 @@ const AuthProvider = ({ children }: any) => {
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const value = {
     currentUser,
+    loading,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {loading ? <Loader fullScreen /> : children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

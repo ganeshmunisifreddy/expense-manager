@@ -42,6 +42,10 @@ a {
   text-align: right;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 @media screen and (min-width: 512px) {
   body {
     background: linear-gradient(25deg, #7635dc, #fafeff);

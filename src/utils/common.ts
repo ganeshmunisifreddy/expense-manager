@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 export const deleteKey = (obj: any, key: string) => {
   const newObj = { ...obj };
   delete newObj[key];
@@ -30,3 +32,18 @@ export const stringAvatar = (text: string): string => {
   }
   return avatar;
 }
+
+export const ConvertToCurrency = (number: number) => {
+  const RupeeIndian = Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  })
+  return RupeeIndian.format(number);
+};
+
+export const formatDateText = (date: string, time: string) => {
+  if (new Date(date).toLocaleDateString() === new Date().toLocaleDateString()) {
+    return "Today, " + convertTimeToMeridiem(time);
+  }
+  return format(new Date(date), "dd MMM");
+};

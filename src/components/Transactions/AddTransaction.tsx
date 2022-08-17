@@ -18,13 +18,56 @@ import { deleteKeys } from "../../utils/common";
 import { useAuth } from "../../contexts/AuthContext";
 
 const initialTransaction = {
-  account: "",
   amount: "",
   description: "",
+  account: "",
   date: format(new Date(), "yyyy-MM-dd"),
   time: format(new Date(), "HH:mm"),
   isHomeExpense: false,
 };
+
+const FIELDS = [
+  {
+    label: "Amount",
+    type: "number",
+    placeholder: "Enter Amount",
+    name: "amount",
+    fullWidth: true,
+    required: true,
+  },
+  {
+    label: "Description",
+    type: "text",
+    placeholder: "What was this spend for?",
+    name: "description",
+    fullWidth: true,
+    required: true,
+  },
+  {
+    label: "Account",
+    type: "text",
+    placeholder: "Select Account",
+    name: "account",
+    fullWidth: true,
+    required: false,
+  },
+  {
+    label: "Date",
+    type: "date",
+    placeholder: "",
+    name: "date",
+    fullWidth: true,
+    required: true,
+  },
+  {
+    label: "Time",
+    type: "time",
+    placeholder: "",
+    name: "time",
+    fullWidth: true,
+    required: true,
+  },
+];
 
 const AddTransaction = (props: any) => {
   const {
@@ -75,7 +118,9 @@ const AddTransaction = (props: any) => {
     getTransactions();
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e: any) => {
+    e.preventDefault();
+    //return console.log(newTransaction);
     toggleLoading(true);
     try {
       if (transactionId) {
@@ -108,87 +153,51 @@ const AddTransaction = (props: any) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle align="center">
-        <Typography>{transactionId ? "Edit Expense" : "Add Expense"}</Typography>
-      </DialogTitle>
-      <DialogContent>
-        <div className={styles.formFields}>
-          <div className={styles.field}>
-            <TextField
-              size="small"
-              label="Account"
-              type="text"
-              placeholder="Enter Account"
-              name="account"
-              value={newTransaction.account}
-              onChange={handleChange}
-              fullWidth
-            />
+    <Dialog
+      open={open}
+      //onClose={onClose}
+    >
+      <form onSubmit={handleSave}>
+        <DialogTitle align="center">
+          <Typography>{transactionId ? "Edit Expense" : "Add Expense"}</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <div className={styles.formFields}>
+            {FIELDS.map((field: any, index: number) => {
+              return (
+                <div className={styles.field} key={field.label + "-" + index}>
+                  <TextField
+                    size="small"
+                    label={field.label}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    name={field.name}
+                    value={newTransaction[field.name]}
+                    onChange={handleChange}
+                    fullWidth={field.fullWidth}
+                    required={field.required}
+                  />
+                </div>
+              );
+            })}
+            <div className={styles.switchField}>
+              <label>Home Expense</label>
+              <Switch
+                checked={newTransaction.isHomeExpense}
+                onChange={(e: any) => handleSwitch("isHomeExpense", e.target.checked)}
+              />
+            </div>
           </div>
-          <div className={styles.field}>
-            <TextField
-              size="small"
-              label="Amount"
-              type="number"
-              placeholder="Enter Amount"
-              name="amount"
-              value={newTransaction.amount}
-              onChange={handleChange}
-              fullWidth
-            />
-          </div>
-          <div className={styles.field}>
-            <TextField
-              size="small"
-              label="Description"
-              type="text"
-              placeholder="Enter Description"
-              name="description"
-              value={newTransaction.description}
-              onChange={handleChange}
-              fullWidth
-            />
-          </div>
-          <div className={styles.field}>
-            <TextField
-              size="small"
-              label="Date"
-              type="date"
-              name="date"
-              value={newTransaction.date}
-              onChange={handleChange}
-              fullWidth
-            />
-          </div>
-          <div className={styles.field}>
-            <TextField
-              size="small"
-              label="Time"
-              type="time"
-              name="time"
-              value={newTransaction.time}
-              onChange={handleChange}
-              fullWidth
-            />
-          </div>
-          <div className={styles.switchField}>
-            <label>Home Expense</label>
-            <Switch
-              checked={newTransaction.isHomeExpense}
-              onChange={(e: any) => handleSwitch("isHomeExpense", e.target.checked)}
-            />
-          </div>
-        </div>
-      </DialogContent>
-      <DialogActions>
-        <Button color="error" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button variant="contained" onClick={handleSave}>
-          {newTransaction.id ? "Update" : "Save"}
-        </Button>
-      </DialogActions>
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button variant="contained" type="submit">
+            {newTransaction.id ? "Update" : "Save"}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 };

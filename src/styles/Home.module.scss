@@ -3,7 +3,7 @@
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  min-height: 100vh;
+  min-height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -37,6 +37,7 @@
   padding: 32px 16px;
   box-shadow: $box-shadow;
   border-radius: 12px;
+  cursor: pointer;
 }
 
 /* .myExpenses {

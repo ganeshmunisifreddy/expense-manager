@@ -39,19 +39,17 @@ const Header = (props: Props) => {
   const displayName = stringAvatar(currentUser?.displayName || "User");
   return (
     <div className={styles.header}>
-      <Typography variant="h6">Expense Manager</Typography>
+      <Link href="/" passHref>
+        <Typography variant="h6" className="cursor-pointer">
+          Expense Manager
+        </Typography>
+      </Link>
       <IconButton onClick={handleClick}>
         <Avatar sx={{ background: "#7635dc", width: 32, height: 32, fontSize: 16 }}>
           {displayName}
         </Avatar>
       </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <Link href="/profile" passHref>
           <MenuItem onClick={() => handleAction("profile")}>Profile</MenuItem>
         </Link>

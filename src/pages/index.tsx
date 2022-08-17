@@ -1,36 +1,25 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import {
-  collection,
-  getDocs,
-  doc,
-  deleteDoc,
-  query,
-  orderBy,
-  limit,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit, where } from "firebase/firestore";
 import { useEffect, useState, useCallback } from "react";
-import { Typography, Container, Button, Card } from "@mui/material";
+import { Typography, Container, Card } from "@mui/material";
 import { UserGroupIcon, UserIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 
 import { db } from "../firebase/config";
-import AddTransaction from "../components/Transactions/AddTransaction";
 import Loader from "../components/Loader/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
 import styles from "../styles/Home.module.scss";
 import Transactions from "../components/Transactions";
 import PrivateLayout from "../layouts/PrivateLayout";
+import Link from "next/link";
 
 const txnCollectionRef = collection(db, "expenses");
 
 const Home: NextPage = () => {
   const [transactions, setTransactions] = useState<any>([]);
-  const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { currentUser }: any = useAuth();
 
@@ -38,42 +27,12 @@ const Home: NextPage = () => {
 
   const router = useRouter();
 
-  const handleDelete = async (id: string) => {
-    const isConfirm = confirm("Are you sure, you want to delete?");
-    if (isConfirm) {
-      setIsLoading(true);
-      try {
-        const docRef = doc(db, "expenses", id);
-        await deleteDoc(docRef);
-        setIsLoading(false);
-        getTransactions();
-      } catch (e: any) {
-        console.log(e);
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const handleEditMode = (id: string) => {
-    setTransactionId(id);
-    setIsOpen(true);
-  };
-
-  const toggleLoading = (value: boolean) => setIsLoading(value);
-
-  const openModal = () => setIsOpen(true);
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
   const getTransactions = useCallback(async () => {
     setIsLoading(true);
     const q = query(
       txnCollectionRef,
-      orderBy("date", "asc"),
-      where("date", ">=", "2022-08-01"),
-      where("date", "<=", "2022-08-31"),
+      orderBy("date", "desc"),
+      orderBy("time", "desc"),
       where("createdBy", "==", userId),
       limit(10),
     );
@@ -108,37 +67,22 @@ const Home: NextPage = () => {
 
         <main className={styles.main}>
           <div className={styles.cards}>
-            <Card className={styles.myExpenses}>
-              <UserIcon height={32} color="#212b36" />
-              <Typography>My Expenses</Typography>
-            </Card>
+            <Link href="/my-expenses" passHref>
+              <Card className={styles.myExpenses}>
+                <UserIcon height={32} color="#212b36" />
+                <Typography>My Expenses</Typography>
+              </Card>
+            </Link>
             <Card className={styles.homeExpenses}>
               <UserGroupIcon height={32} color="#212b36" />
               <Typography>Groups</Typography>
             </Card>
           </div>
-          <div className="flex justify-center">
-            <Button size="small" variant="contained" style={{ width: "100%" }} onClick={openModal}>
-              Add Expense
-            </Button>
+          <div>
+            <Typography variant="subtitle1">Recent Transactions</Typography>
+            <Transactions data={transactions} getTransactions={getTransactions} />
           </div>
-          <Transactions
-            data={transactions}
-            handleDelete={handleDelete}
-            handleEditMode={handleEditMode}
-          />
         </main>
-        {isOpen && (
-          <AddTransaction
-            transactions={transactions}
-            getTransactions={getTransactions}
-            transactionId={transactionId}
-            toggleLoading={toggleLoading}
-            handleEditMode={handleEditMode}
-            open={isOpen}
-            onClose={closeModal}
-          />
-        )}
       </Container>
     </PrivateLayout>
   );

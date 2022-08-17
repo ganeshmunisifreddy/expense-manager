@@ -1,7 +1,7 @@
 @import '../../styles/variables.scss';
 
 .root {
-  margin-top: 24px;
+  padding-bottom: 24px;
 }
 
 .transactions {
@@ -40,7 +40,8 @@
 }
 
 .formFields {
-  min-width: 260px;
+  //min-width: 200px;
+  min-width: 280px;
   width: 100%;
 }
 
@@ -53,4 +54,25 @@
   margin-top: 12px;
   align-items: center;
   justify-content: space-between;
+}
+
+.fabBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+}
+
+@media screen and (max-width: 375px) {
+  .formFields {
+    min-width: 240px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .formFields {
+    min-width: auto;
+  }
 }

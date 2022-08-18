@@ -9,7 +9,7 @@ import { db } from "../firebase/config";
 import Loader from "../components/Loader/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
-import styles from "../styles/MyExpenses.module.scss";
+import styles from "../styles/Groups.module.scss";
 import Transactions from "../components/Transactions";
 import PrivateLayout from "../layouts/PrivateLayout";
 import {
@@ -20,10 +20,11 @@ import {
   endOfYear,
   startOfYear,
 } from "date-fns";
+import GroupsSection from "../components/GroupsSection";
 
 const txnCollectionRef = collection(db, "expenses");
 
-const MyExpenses: NextPage = () => {
+const Groups: NextPage = () => {
   const [transactions, setTransactions] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dateFilter, setDateFilter] = useState<any>({
@@ -93,14 +94,15 @@ const MyExpenses: NextPage = () => {
     <PrivateLayout>
       <Container className={styles.container}>
         <Head>
-          <title>My Expenses | Expense Manager</title>
+          <title>Groups | Expense Manager</title>
         </Head>
 
         {isLoading && <Loader fullScreen />}
 
         <main className={styles.main}>
+          <GroupsSection groups={[]} />
           <div className={styles.filterSection}>
-            <Typography variant="h6">Transactions</Typography>
+            <Typography variant="h6">Groups</Typography>
             <Select value={dateFilter.month} onChange={handleMonthChange} size="small">
               {Object.values(selectData).map((item: any) => (
                 <MenuItem key={item.month} value={item.month}>
@@ -116,4 +118,4 @@ const MyExpenses: NextPage = () => {
   );
 };
 
-export default MyExpenses;
+export default Groups;

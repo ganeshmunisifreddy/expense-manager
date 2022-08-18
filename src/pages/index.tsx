@@ -73,10 +73,12 @@ const Home: NextPage = () => {
                 <Typography>My Expenses</Typography>
               </Card>
             </Link>
-            <Card className={styles.homeExpenses}>
-              <UserGroupIcon height={32} color="#212b36" />
-              <Typography>Groups</Typography>
-            </Card>
+            <Link href="/groups" passHref>
+              <Card className={styles.homeExpenses}>
+                <UserGroupIcon height={32} color="#212b36" />
+                <Typography>Groups</Typography>
+              </Card>
+            </Link>
           </div>
           <div>
             <Typography variant="subtitle1">Recent Transactions</Typography>

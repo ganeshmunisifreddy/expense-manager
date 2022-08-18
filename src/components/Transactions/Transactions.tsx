@@ -82,7 +82,7 @@ const Transactions = (props: any) => {
                   <div style={{ flex: 6, overflow: "hidden" }}>
                     <Typography className={styles.description}>{txn.description}</Typography>
                     <Typography className={styles.account}>
-                      <CreditCardIcon height={16} color="#0272F5" className={styles.accountIcon} />
+                      <CreditCardIcon height={16} color="#7635dc" className={styles.accountIcon} />
                       {txn.account}
                     </Typography>
                   </div>
@@ -96,7 +96,7 @@ const Transactions = (props: any) => {
                     <IconButton
                       onClick={(e: any) => handleClick(e, txn.id)}
                       style={{ marginLeft: 8 }}>
-                      <DotsVerticalIcon height={16} color="#0272F5" />
+                      <DotsVerticalIcon height={16} color="#7635dc" />
                     </IconButton>
                   </div>
                 </Card>

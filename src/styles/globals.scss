@@ -16,6 +16,7 @@ a {
 
 * {
   box-sizing: border-box;
+  user-select: none;
 }
 
 .flex {
@@ -28,6 +29,10 @@ a {
 
 .justify-center {
   justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
 }
 
 .text-left {

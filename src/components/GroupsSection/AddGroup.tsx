@@ -79,7 +79,7 @@ const AddGroup = (props: any) => {
       groupObj.users[user.id] = user;
       setNewGroup(groupObj);
     } catch (e: any) {
-      console.log(e.message);
+      console.error(e.message);
       setIsLoading(false);
     }
   };

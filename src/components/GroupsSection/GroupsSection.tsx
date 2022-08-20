@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Typography, Card, Button } from "@mui/material";
-import { PlusIcon } from "@heroicons/react/outline";
+import { Typography, Card, Button, Menu, MenuItem, IconButton } from "@mui/material";
+import { PlusIcon, DotsVerticalIcon } from "@heroicons/react/outline";
 import styles from "./GroupsSection.module.scss";
 import AddGroup from "./AddGroup";
 
 const GroupsSection = (props: any) => {
-  const { groups = [], handleSave, selectedGroup, handleSelectedGroup } = props;
+  const { groups = [], handleSave, selectedGroup, handleSelectedGroup, handleDelete } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [activeGroup, setActiveGroup] = useState("");
 
   const openModal = () => setIsOpen(true);
 
@@ -16,6 +17,31 @@ const GroupsSection = (props: any) => {
 
   const onSave = (group: any) => {
     handleSave(group, closeModal);
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, groupId: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setActiveGroup(groupId);
+  };
+
+  const handleAction = (key: string) => {
+    handleClose();
+    switch (key) {
+      case "delete":
+        return handleDelete(activeGroup);
+      default:
+        break;
+    }
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -37,7 +63,14 @@ const GroupsSection = (props: any) => {
                 }
                 key={group.id}
                 onClick={() => handleSelectedGroup(group)}>
-                {group.name}
+                <div className={styles.groupInfo}>
+                  <Typography>{group.name}</Typography>
+                  <IconButton
+                    onClick={(e: any) => handleClick(e, group.id)}
+                    style={{ marginLeft: 8 }}>
+                    <DotsVerticalIcon height={16} color="#7635dc" />
+                  </IconButton>
+                </div>
               </Card>
             ))}
           </div>
@@ -47,6 +80,9 @@ const GroupsSection = (props: any) => {
           </Typography>
         )}
       </div>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem onClick={() => handleAction("delete")}>Delete</MenuItem>
+      </Menu>
       {isOpen && <AddGroup onSave={onSave} open={isOpen} onClose={closeModal} />}
     </>
   );

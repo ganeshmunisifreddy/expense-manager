@@ -59,7 +59,7 @@ const Transactions = (props: any) => {
         setIsLoading(false);
         getTransactions();
       } catch (e: any) {
-        console.log(e);
+        console.error(e.message);
         setIsLoading(false);
       }
     }

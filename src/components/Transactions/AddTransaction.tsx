@@ -111,7 +111,6 @@ const AddTransaction = (props: any) => {
 
   const handleSave = async (e: any) => {
     e.preventDefault();
-    //return console.log(newTransaction);
     toggleLoading(true);
     try {
       if (transactionId) {
@@ -135,7 +134,7 @@ const AddTransaction = (props: any) => {
           updatedAt: serverTimestamp(),
           groupId: selectedGroup?.id,
         };
-        console.log(newTxn);
+        console.error(newTxn);
         await addDoc(txnCollectionRef, newTxn);
         resetTransaction();
       }

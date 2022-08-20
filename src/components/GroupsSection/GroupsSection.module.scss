@@ -10,7 +10,7 @@
 
 .groupCard {
   margin-right: 12px;
-  padding: 8px 20px;
+  padding: 4px 4px 4px 16px;
   flex-shrink: 0;
   cursor: pointer;
   border: 2px solid transparent;
@@ -19,12 +19,24 @@
   &:hover {
     border: 2px solid $primary-color;
   }
+
+  .groupInfo {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .selectedGroup {
   background: $primary-color;
   color: #fff;
-  font-weight: 600;
+
+  & p {
+    font-weight: 600;
+  }
+
+  & svg {
+    color: #fff;
+  }
 }
 
 .formFields {

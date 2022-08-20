@@ -26,7 +26,6 @@ const Profile: NextPage = () => {
     if (displayName) {
       setName(displayName);
     }
-    //console.log(currentUser);
   }, [displayName]);
 
   const handleUpdate = async () => {
@@ -45,7 +44,7 @@ const Profile: NextPage = () => {
       });
       setIsLoading(false);
     } catch (e: any) {
-      console.log(e.message);
+      console.error(e.message);
       setErrMsg(e.message);
       setIsLoading(false);
     }

@@ -8,6 +8,8 @@ import {
   where,
   addDoc,
   serverTimestamp,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Container, MenuItem, Select, Typography } from "@mui/material";
@@ -82,10 +84,12 @@ const Groups: NextPage = () => {
       const q = query(groupCollectionRef, where(`users.${userId}.id`, "==", userId));
       const data = await getDocs(q);
       const groupsData =
-        data.docs.map((doc) => {
-          const newItem: any = { ...doc.data(), id: doc.id };
-          return newItem;
-        }) || [];
+        data.docs
+          .map((doc) => {
+            const newItem: any = { ...doc.data(), id: doc.id };
+            return newItem;
+          })
+          .filter((item: any) => item.active) || [];
       setGroups(groupsData);
       if (groupsData.length) {
         setSelectedGroup(groupsData[0]);
@@ -120,6 +124,27 @@ const Groups: NextPage = () => {
     }
   };
 
+  const handleDelete = async (groupId: string) => {
+    const isConfirm = confirm(
+      "Are you sure, you want to delete?\nDeleting Group won't delete group transactions.",
+    );
+    if (!isConfirm) return;
+    setIsLoading(true);
+    try {
+      const docRef = doc(db, "groups", groupId);
+      const updatedTxn = {
+        active: false,
+        updatedAt: serverTimestamp(),
+      };
+      await updateDoc(docRef, updatedTxn);
+      getGroups();
+    } catch (e: any) {
+      console.error(e.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getGroupTransactions = useCallback(async () => {
     if (!selectedGroup.id) {
       return;
@@ -138,7 +163,7 @@ const Groups: NextPage = () => {
       const transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
       setTransactions(transactions);
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -171,6 +196,7 @@ const Groups: NextPage = () => {
             handleSave={handleSave}
             selectedGroup={selectedGroup}
             handleSelectedGroup={handleSelectedGroup}
+            handleDelete={handleDelete}
           />
           {groups.length > 0 && (
             <>

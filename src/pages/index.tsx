@@ -41,7 +41,7 @@ const Home: NextPage = () => {
       const transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
       setTransactions(transactions);
     } catch (e: any) {
-      console.log(e);
+      console.error(e.message);
     } finally {
       setIsLoading(false);
     }

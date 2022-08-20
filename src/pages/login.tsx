@@ -41,10 +41,10 @@ const Login = () => {
       {
         size: "invisible",
         callback: () => {
-          console.log("captcha solved");
+          //callback
         },
         errorCallback: (response: any) => {
-          console.log(response);
+          console.error(response);
         },
       },
       auth,
@@ -66,10 +66,10 @@ const Login = () => {
         setIsLoading(false);
         window.confirmationResult = confirmationResult;
       })
-      .catch((error) => {
-        console.log("Error Message####", error.message);
+      .catch((e: any) => {
+        console.error(e.message);
         setIsLoading(false);
-        setErrMsg(error.message);
+        setErrMsg(e.message);
       });
   };
 
@@ -87,10 +87,10 @@ const Login = () => {
         //const user = result.user;
         router.push("/");
       })
-      .catch((error: any) => {
+      .catch((e: any) => {
         setIsLoading(false);
-        setErrMsg(error.message);
-        console.log("Error Message####", error.message);
+        setErrMsg(e.message);
+        console.error(e.message);
       });
   };
 

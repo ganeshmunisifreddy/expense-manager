@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -8,98 +8,108 @@ import {
   DialogTitle,
   Typography,
   TextField,
+  InputAdornment,
+  IconButton,
+  Card,
+  Avatar,
 } from "@mui/material";
-import { collection, addDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
-import styles from "./Groups.module.scss";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import styles from "./GroupsSection.module.scss";
 import { db } from "../../firebase/config";
-import { format } from "date-fns";
-import { deleteKeys } from "../../utils/common";
 import { useAuth } from "../../contexts/AuthContext";
+import { SearchIcon, XIcon } from "@heroicons/react/outline";
+import Loader from "../Loader";
+import { stringAvatar } from "../../utils/common";
 
-const initialTransaction = {
-  amount: "",
-  description: "",
-  account: "",
-  date: format(new Date(), "yyyy-MM-dd"),
-  time: format(new Date(), "HH:mm"),
-  isHomeExpense: false,
+const initialGroup = {
+  name: "",
+  users: {},
 };
 
+const userCollectionRef = collection(db, "users");
+
 const AddGroup = (props: any) => {
-  const { groups, getGroups, groupId = "", toggleLoading, handleEditMode, open, onClose } = props;
+  const { open, onClose, onSave } = props;
 
   const { currentUser }: any = useAuth();
 
-  const [newTransaction, setNewTransaction] = useState<any>(initialTransaction);
+  const { uid = "", displayName = "", phoneNumber = "" } = currentUser || {};
 
-  const txnCollectionRef = collection(db, "expenses");
+  const [newGroup, setNewGroup] = useState<any>(initialGroup);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [phoneNumberText, setPhoneNumberText] = useState("");
 
-  useEffect(() => {
-    const transaction = groups.find((item: any) => item.id === groupId);
-    if (transaction) {
-      setNewTransaction(transaction);
-    }
-  }, [groupId, groups]);
-
-  const handleChange = (e: any) => {
+  const handleNameChange = (e: any) => {
     const { name, value } = e.target;
     const obj = {
-      ...newTransaction,
+      ...newGroup,
       [name]: value,
     };
-    setNewTransaction(obj);
+    setNewGroup(obj);
   };
 
-  const resetTransaction = () => {
-    handleEditMode("");
-    setNewTransaction({ ...initialTransaction });
-    toggleLoading(false);
-    onClose();
-    getGroups();
-  };
-
-  const handleSave = async (e: any) => {
-    e.preventDefault();
-    //return console.log(newTransaction);
-    toggleLoading(true);
-    try {
-      if (groupId) {
-        // Edit mode
-        const id = groups.findIndex((item: any) => item.id === groupId);
-        if (id > -1) {
-          const docRef = doc(db, "expenses", groupId);
-          let updatedTxn = {
-            ...newTransaction,
-            updatedAt: serverTimestamp(),
-          };
-          updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt"]);
-          await updateDoc(docRef, updatedTxn);
-          resetTransaction();
-        }
-      } else {
-        const newTxn = {
-          ...newTransaction,
-          createdBy: currentUser?.uid || "",
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        };
-        await addDoc(txnCollectionRef, newTxn);
-        resetTransaction();
-      }
-    } catch (e: any) {
-      console.error(e.message);
-      toggleLoading(false);
+  const getUser = async () => {
+    const withCountryCode = "+91" + phoneNumberText;
+    if (!phoneNumberText || withCountryCode === phoneNumber.toString()) {
+      setPhoneNumberText("");
+      return;
     }
+    setIsLoading(true);
+    try {
+      const q = query(userCollectionRef, where("phoneNumber", "==", withCountryCode));
+      const data = await getDocs(q);
+      setIsLoading(false);
+      if (!data.docs.length) {
+        return alert("User does not exist. Please check phone number.");
+      }
+      setPhoneNumberText("");
+      const user = {
+        id: data.docs[0].id,
+        ...data.docs[0].data(),
+      };
+      const groupObj = {
+        ...newGroup,
+      };
+      if (!groupObj.users[uid]) {
+        groupObj.users[uid] = { id: uid, displayName, phoneNumber };
+      }
+      if (groupObj.users[user.id]) {
+        return alert("User already added to the group.");
+      }
+      groupObj.users[user.id] = user;
+      setNewGroup(groupObj);
+    } catch (e: any) {
+      console.log(e.message);
+      setIsLoading(false);
+    }
+  };
+
+  const deleteUser = (id: string) => {
+    const group = {
+      ...newGroup,
+    };
+    if (group.users[id]) {
+      delete group.users[id];
+    }
+    if (Object.keys(group.users).length < 2) {
+      group.users = {};
+    }
+    setNewGroup(group);
+  };
+
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    if (newGroup.users.length < 2) {
+      return alert("Please add at least one user.");
+    }
+    onSave(newGroup);
   };
 
   return (
-    <Dialog
-      open={open}
-      //onClose={onClose}
-    >
-      <form onSubmit={handleSave}>
+    <Dialog open={open}>
+      <form onSubmit={onSubmit}>
         <DialogTitle align="center">
-          <Typography>{groupId ? "Edit Group" : "Add Group"}</Typography>
+          <Typography>Add Group</Typography>
         </DialogTitle>
         <DialogContent>
           <div className={styles.formFields}>
@@ -108,13 +118,69 @@ const AddGroup = (props: any) => {
                 size="small"
                 label="Name"
                 type="text"
-                placeholder="Enter Group name"
+                placeholder="Enter group name"
                 name="name"
-                value=""
-                onChange={handleChange}
+                value={newGroup.name}
+                onChange={handleNameChange}
                 fullWidth
                 required
               />
+            </div>
+            <div className={styles.field}>
+              <TextField
+                size="small"
+                label="Search User"
+                type="number"
+                placeholder="Enter user phone number"
+                name="searchUser"
+                value={phoneNumberText}
+                onChange={(e: any) => setPhoneNumberText(e.target.value)}
+                fullWidth
+                disabled={isLoading}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={getUser}>
+                        <SearchIcon height={16} color="#333" />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {isLoading && (
+                <div style={{ margin: 16, textAlign: "center" }}>
+                  <Loader size={20} />
+                </div>
+              )}
+              {Object.values(newGroup.users)?.length > 0 && (
+                <>
+                  <Typography variant="subtitle1" className={styles.usersTitle}>
+                    Group Members
+                  </Typography>
+                  <div className={styles.users}>
+                    {Object.values(newGroup.users).map((user: any) => (
+                      <Card className={styles.user} key={user.id}>
+                        <Avatar sx={{ width: 32, height: 32 }}>
+                          {stringAvatar(user.displayName)}
+                        </Avatar>
+                        <div className={styles.userInfo}>
+                          <Typography>{user.displayName}</Typography>
+                          <Typography variant="body2" color="primary">
+                            {user.phoneNumber}
+                          </Typography>
+                        </div>
+                        {user.id !== uid && (
+                          <IconButton
+                            className={styles.removeBtn}
+                            onClick={() => deleteUser(user.id)}>
+                            <XIcon height={16} color="#ff0000" />
+                          </IconButton>
+                        )}
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </DialogContent>
@@ -123,7 +189,7 @@ const AddGroup = (props: any) => {
             Cancel
           </Button>
           <Button variant="contained" type="submit">
-            {newTransaction.id ? "Update" : "Save"}
+            {newGroup.id ? "Update" : "Save"}
           </Button>
         </DialogActions>
       </form>

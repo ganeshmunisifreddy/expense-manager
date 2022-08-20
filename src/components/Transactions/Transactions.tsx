@@ -10,7 +10,7 @@ import { db } from "../../firebase/config";
 import Loader from "../Loader";
 
 const Transactions = (props: any) => {
-  const { data = [], getTransactions } = props;
+  const { data = [], getTransactions, selectedGroup } = props;
 
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -129,6 +129,7 @@ const Transactions = (props: any) => {
             handleEditMode={handleEditMode}
             open={isOpen}
             onClose={closeModal}
+            selectedGroup={selectedGroup}
           />
         )}
       </div>

@@ -2,7 +2,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import {
   Button,
-  Switch,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,7 +22,6 @@ const initialTransaction = {
   account: "",
   date: format(new Date(), "yyyy-MM-dd"),
   time: format(new Date(), "HH:mm"),
-  isHomeExpense: false,
 };
 
 const FIELDS = [
@@ -36,9 +34,9 @@ const FIELDS = [
     required: true,
   },
   {
-    label: "Description",
+    label: "What was this spend for?",
     type: "text",
-    placeholder: "What was this spend for?",
+    placeholder: "Enter description",
     name: "description",
     fullWidth: true,
     required: true,
@@ -46,7 +44,7 @@ const FIELDS = [
   {
     label: "Account",
     type: "text",
-    placeholder: "Select Account",
+    placeholder: "Enter Account",
     name: "account",
     fullWidth: true,
     required: false,
@@ -78,6 +76,7 @@ const AddTransaction = (props: any) => {
     handleEditMode,
     open,
     onClose,
+    selectedGroup,
   } = props;
 
   const { currentUser }: any = useAuth();
@@ -98,14 +97,6 @@ const AddTransaction = (props: any) => {
     const obj = {
       ...newTransaction,
       [name]: value,
-    };
-    setNewTransaction(obj);
-  };
-
-  const handleSwitch = (name: string, checked: boolean) => {
-    const obj = {
-      ...newTransaction,
-      [name]: checked,
     };
     setNewTransaction(obj);
   };
@@ -142,7 +133,9 @@ const AddTransaction = (props: any) => {
           createdBy: currentUser?.uid || "",
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
+          groupId: selectedGroup?.id,
         };
+        console.log(newTxn);
         await addDoc(txnCollectionRef, newTxn);
         resetTransaction();
       }
@@ -180,13 +173,6 @@ const AddTransaction = (props: any) => {
                 </div>
               );
             })}
-            <div className={styles.switchField}>
-              <label>Home Expense</label>
-              <Switch
-                checked={newTransaction.isHomeExpense}
-                onChange={(e: any) => handleSwitch("isHomeExpense", e.target.checked)}
-              />
-            </div>
           </div>
         </DialogContent>
         <DialogActions>

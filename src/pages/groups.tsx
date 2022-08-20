@@ -1,6 +1,14 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  where,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Container, MenuItem, Select, Typography } from "@mui/material";
 import { useRouter } from "next/router";
@@ -23,9 +31,12 @@ import {
 import GroupsSection from "../components/GroupsSection";
 
 const txnCollectionRef = collection(db, "expenses");
+const groupCollectionRef = collection(db, "groups");
 
 const Groups: NextPage = () => {
+  const [groups, setGroups] = useState<any>([]);
   const [transactions, setTransactions] = useState<any>([]);
+  const [selectedGroup, setSelectedGroup] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dateFilter, setDateFilter] = useState<any>({
     fromDate: format(startOfMonth(new Date()), "yyyy-MM-dd"),
@@ -61,17 +72,68 @@ const Groups: NextPage = () => {
     setDateFilter(selectData[value]);
   };
 
-  const getTransactions = useCallback(async () => {
+  const handleSelectedGroup = (group: any) => {
+    setSelectedGroup(group);
+  };
+
+  const getGroups = useCallback(async () => {
     setIsLoading(true);
-    const q = query(
-      txnCollectionRef,
-      orderBy("date", "desc"),
-      orderBy("time", "desc"),
-      where("date", ">=", dateFilter.fromDate),
-      where("date", "<=", dateFilter.toDate),
-      where("createdBy", "==", userId),
-    );
     try {
+      const q = query(groupCollectionRef, where(`users.${userId}.id`, "==", userId));
+      const data = await getDocs(q);
+      const groupsData =
+        data.docs.map((doc) => {
+          const newItem: any = { ...doc.data(), id: doc.id };
+          return newItem;
+        }) || [];
+      setGroups(groupsData);
+      if (groupsData.length) {
+        setSelectedGroup(groupsData[0]);
+      }
+    } catch (e: any) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
+
+  const handleSave = async (newGroup: any, closeModal: any) => {
+    setIsLoading(true);
+    try {
+      const newGroupDoc = {
+        ...newGroup,
+        createdBy: currentUser?.uid || "",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+      const savedGroup = await addDoc(groupCollectionRef, newGroupDoc);
+      const savedDoc = { ...newGroupDoc, id: savedGroup.id };
+      const groupsData = [...groups];
+      groupsData.push(savedDoc);
+      setGroups(groupsData);
+      setSelectedGroup(savedDoc);
+      closeModal();
+    } catch (e: any) {
+      console.error(e.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getGroupTransactions = useCallback(async () => {
+    if (!selectedGroup.id) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const q = query(
+        txnCollectionRef,
+        orderBy("date", "desc"),
+        orderBy("time", "desc"),
+        where("date", ">=", dateFilter.fromDate),
+        where("date", "<=", dateFilter.toDate),
+        where("groupId", "==", selectedGroup.id),
+      );
       const data = await getDocs(q);
       const transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
       setTransactions(transactions);
@@ -80,15 +142,19 @@ const Groups: NextPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [userId, dateFilter]);
+  }, [dateFilter, selectedGroup]);
+
+  useEffect(() => {
+    getGroupTransactions();
+  }, [getGroupTransactions]);
 
   useEffect(() => {
     if (userId) {
-      getTransactions();
+      getGroups();
     } else {
       router.push("/login");
     }
-  }, [userId, router, getTransactions]);
+  }, [userId, router, getGroups]);
 
   return (
     <PrivateLayout>
@@ -100,18 +166,31 @@ const Groups: NextPage = () => {
         {isLoading && <Loader fullScreen />}
 
         <main className={styles.main}>
-          <GroupsSection groups={[]} />
-          <div className={styles.filterSection}>
-            <Typography variant="h6">Groups</Typography>
-            <Select value={dateFilter.month} onChange={handleMonthChange} size="small">
-              {Object.values(selectData).map((item: any) => (
-                <MenuItem key={item.month} value={item.month}>
-                  {item.month}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-          <Transactions data={transactions} getTransactions={getTransactions} />
+          <GroupsSection
+            groups={groups}
+            handleSave={handleSave}
+            selectedGroup={selectedGroup}
+            handleSelectedGroup={handleSelectedGroup}
+          />
+          {groups.length > 0 && (
+            <>
+              <div className={styles.filterSection}>
+                <Typography variant="h6">{selectedGroup?.name}</Typography>
+                <Select value={dateFilter.month} onChange={handleMonthChange} size="small">
+                  {Object.values(selectData).map((item: any) => (
+                    <MenuItem key={item.month} value={item.month}>
+                      {item.month}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </div>
+              <Transactions
+                data={transactions}
+                getTransactions={getGroupTransactions}
+                selectedGroup={selectedGroup}
+              />
+            </>
+          )}
         </main>
       </Container>
     </PrivateLayout>

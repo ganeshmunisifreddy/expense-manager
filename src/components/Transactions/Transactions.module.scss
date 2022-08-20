@@ -48,18 +48,11 @@
   margin-top: 20px;
 }
 
-.switchField {
-  display: flex;
-  margin-top: 12px;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .fabBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: fixed;
+  position: absolute;
   bottom: 16px;
   right: 16px;
 }

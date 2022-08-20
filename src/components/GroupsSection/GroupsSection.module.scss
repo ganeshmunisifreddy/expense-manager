@@ -1,0 +1,72 @@
+@import '../../styles/variables.scss';
+
+.groupCardsSection {
+  display: flex;
+  min-width: 100%;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding: 12px 0;
+}
+
+.groupCard {
+  margin-right: 12px;
+  padding: 8px 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 2px solid transparent;
+
+
+  &:hover {
+    border: 2px solid $primary-color;
+  }
+}
+
+.selectedGroup {
+  background: $primary-color;
+  color: #fff;
+  font-weight: 600;
+}
+
+.formFields {
+  min-width: 260px;
+  width: 100%;
+}
+
+.field {
+  margin-top: 20px;
+}
+
+.usersTitle {
+  margin-top: 16px;
+}
+
+.users {
+  margin-top: 16px;
+}
+
+.user {
+  margin-top: 16px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+
+  .userInfo {
+    margin-left: 12px;
+  }
+
+  .removeBtn {
+    margin-left: auto;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .formFields {
+    min-width: 240px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .formFields {
+    min-width: auto;
+  }
+}

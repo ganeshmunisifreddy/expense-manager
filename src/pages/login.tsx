@@ -138,7 +138,11 @@ const Login = () => {
           )}
           <div className={styles.inputField}>
             {isOtpSent ? (
-              <Button variant="contained" className={styles.submitBtn} onClick={verifyOtp}>
+              <Button
+                variant="contained"
+                className={styles.submitBtn}
+                onClick={verifyOtp}
+                disabled={isLoading}>
                 {isLoading ? <Loader size={20} /> : "Verify"}
               </Button>
             ) : (

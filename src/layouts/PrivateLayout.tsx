@@ -24,7 +24,7 @@ const PrivateLayout = ({ children }: Props) => {
   const logout = async () => {
     try {
       await signOut(auth);
-      router.push("/login");
+      router.replace("/login");
     } catch (e: any) {
       console.error(e);
     }
@@ -33,10 +33,10 @@ const PrivateLayout = ({ children }: Props) => {
   useEffect(() => {
     if (userId) {
       if (!displayName && router.pathname !== "/profile") {
-        router.push("/profile");
+        router.replace("/profile");
       }
     } else {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [userId, displayName, router]);
 

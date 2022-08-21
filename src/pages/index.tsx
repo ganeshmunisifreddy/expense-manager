@@ -51,7 +51,7 @@ const Home: NextPage = () => {
     if (userId) {
       getTransactions();
     } else {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [userId, router, getTransactions]);
 

@@ -85,7 +85,7 @@ const Login = () => {
       .then(() => {
         setIsLoading(false);
         //const user = result.user;
-        router.push("/");
+        router.replace("/");
       })
       .catch((e: any) => {
         setIsLoading(false);
@@ -96,7 +96,7 @@ const Login = () => {
 
   useEffect(() => {
     if (currentUser) {
-      router.push("/");
+      router.replace("/");
     }
   }, [currentUser, router]);
 

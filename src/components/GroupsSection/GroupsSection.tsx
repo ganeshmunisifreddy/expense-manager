@@ -7,12 +7,13 @@ import AddGroup from "./AddGroup";
 const GroupsSection = (props: any) => {
   const { groups = [], handleSave, selectedGroup, handleSelectedGroup, handleDelete } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [activeGroup, setActiveGroup] = useState("");
+  const [activeGroup, setActiveGroup] = useState<any>({});
 
   const openModal = () => setIsOpen(true);
 
   const closeModal = () => {
     setIsOpen(false);
+    setActiveGroup({});
   };
 
   const onSave = (group: any) => {
@@ -23,18 +24,20 @@ const GroupsSection = (props: any) => {
 
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, groupId: string) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, group: any) => {
     event.preventDefault();
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
-    setActiveGroup(groupId);
+    setActiveGroup(group);
   };
 
   const handleAction = (key: string) => {
     handleClose();
     switch (key) {
+      case "view":
+        return setIsOpen(true);
       case "delete":
-        return handleDelete(activeGroup);
+        return handleDelete(activeGroup.id);
       default:
         break;
     }
@@ -65,9 +68,7 @@ const GroupsSection = (props: any) => {
                 onClick={() => handleSelectedGroup(group)}>
                 <div className={styles.groupInfo}>
                   <Typography>{group.name}</Typography>
-                  <IconButton
-                    onClick={(e: any) => handleClick(e, group.id)}
-                    style={{ marginLeft: 8 }}>
+                  <IconButton onClick={(e: any) => handleClick(e, group)} style={{ marginLeft: 8 }}>
                     <DotsVerticalIcon height={16} color="#7635dc" />
                   </IconButton>
                 </div>
@@ -81,9 +82,12 @@ const GroupsSection = (props: any) => {
         )}
       </div>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem onClick={() => handleAction("view")}>View</MenuItem>
         <MenuItem onClick={() => handleAction("delete")}>Delete</MenuItem>
       </Menu>
-      {isOpen && <AddGroup onSave={onSave} open={isOpen} onClose={closeModal} />}
+      {isOpen && (
+        <AddGroup activeGroup={activeGroup} onSave={onSave} open={isOpen} onClose={closeModal} />
+      )}
     </>
   );
 };

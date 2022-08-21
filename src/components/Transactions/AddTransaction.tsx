@@ -168,6 +168,7 @@ const AddTransaction = (props: any) => {
                     onChange={handleChange}
                     fullWidth={field.fullWidth}
                     required={field.required}
+                    autoComplete="off"
                   />
                 </div>
               );

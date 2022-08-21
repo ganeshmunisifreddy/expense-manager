@@ -177,7 +177,7 @@ const Groups: NextPage = () => {
     if (userId) {
       getGroups();
     } else {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [userId, router, getGroups]);
 

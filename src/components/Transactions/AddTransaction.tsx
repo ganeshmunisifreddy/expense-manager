@@ -132,9 +132,8 @@ const AddTransaction = (props: any) => {
           createdBy: currentUser?.uid || "",
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
-          groupId: selectedGroup?.id,
+          ...(selectedGroup?.id && { groupId: selectedGroup?.id }),
         };
-        console.error(newTxn);
         await addDoc(txnCollectionRef, newTxn);
         resetTransaction();
       }

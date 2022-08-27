@@ -2,14 +2,15 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Button, Typography, TextField, Card } from "@mui/material";
 import { NextPage } from "next";
-import Link from "next/link";
 import { useAuth } from "../contexts/AuthContext";
-import { updateProfile } from "firebase/auth";
+import { updateProfile, signOut } from "firebase/auth";
+import { useRouter } from "next/router";
+
 import styles from "../styles/Profile.module.scss";
 import PrivateLayout from "../layouts/PrivateLayout";
 import Loader from "../components/Loader/Loader";
 import { setDoc, doc } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { db, auth } from "../firebase/config";
 
 const Profile: NextPage = () => {
   const [name, setName] = useState<string>("");
@@ -17,10 +18,20 @@ const Profile: NextPage = () => {
   const [errMsg, setErrMsg] = useState<string>("");
 
   const { currentUser }: any = useAuth();
+  const router = useRouter();
 
   const { uid = "", phoneNumber, displayName = "" } = currentUser;
 
   const userRef = doc(db, "users", uid);
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      router.replace("/login");
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
     if (displayName) {
@@ -77,9 +88,9 @@ const Profile: NextPage = () => {
           </Button>
         </Card>
 
-        <Link href={"/"} passHref>
-          <Button className={styles.homeBtn}>Go Home</Button>
-        </Link>
+        <Button className={styles.homeBtn} onClick={logout}>
+          Logout
+        </Button>
 
         {errMsg && <Typography className={styles.errorMessage}>{errMsg}</Typography>}
       </div>

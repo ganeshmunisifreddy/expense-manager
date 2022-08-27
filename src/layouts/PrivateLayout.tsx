@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import Header from "../components/Header";
 import { useAuth } from "../contexts/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase/config";
 
 import styles from "../styles/PrivateLayout.module.scss";
 
@@ -21,15 +19,6 @@ const PrivateLayout = ({ children }: Props) => {
 
   const router = useRouter();
 
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      router.replace("/login");
-    } catch (e: any) {
-      console.error(e);
-    }
-  };
-
   useEffect(() => {
     if (userId) {
       if (!displayName && router.pathname !== "/profile") {
@@ -42,7 +31,7 @@ const PrivateLayout = ({ children }: Props) => {
 
   return (
     <Box className={styles.layout}>
-      <Header logout={logout} />
+      <Header />
       <div className={styles.layoutContent}>{children}</div>
     </Box>
   );

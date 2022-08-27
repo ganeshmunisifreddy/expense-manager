@@ -81,10 +81,16 @@ const Transactions = (props: any) => {
                 <Card key={txn.id + "-" + index} className={styles.transaction}>
                   <div style={{ flex: 6, overflow: "hidden" }}>
                     <Typography className={styles.description}>{txn.description}</Typography>
-                    <Typography className={styles.account}>
-                      <CreditCardIcon height={16} color="#7635dc" className={styles.accountIcon} />
-                      {txn.account}
-                    </Typography>
+                    {txn.account && (
+                      <Typography className={styles.account}>
+                        <CreditCardIcon
+                          height={16}
+                          color="#7635dc"
+                          className={styles.accountIcon}
+                        />
+                        {txn.account}
+                      </Typography>
+                    )}
                   </div>
                   <div style={{ flex: 3 }} className="text-right">
                     <Typography className={styles.date}>

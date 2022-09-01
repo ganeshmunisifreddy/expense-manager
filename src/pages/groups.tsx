@@ -12,7 +12,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Container, MenuItem, Select, Typography } from "@mui/material";
+import { Container, MenuItem, Select, Typography, Card } from "@mui/material";
 import { useRouter } from "next/router";
 
 import { db } from "../firebase/config";
@@ -31,6 +31,7 @@ import {
   startOfYear,
 } from "date-fns";
 import GroupsSection from "../components/GroupsSection";
+import { ConvertToCurrency } from "../utils/common";
 
 const txnCollectionRef = collection(db, "expenses");
 const groupCollectionRef = collection(db, "groups");
@@ -45,6 +46,7 @@ const Groups: NextPage = () => {
     toDate: format(endOfMonth(new Date()), "yyyy-MM-dd"),
     month: format(new Date(), "MMMM"),
   });
+  const [stats, setStats] = useState<any>({});
 
   const { currentUser }: any = useAuth();
 
@@ -181,6 +183,28 @@ const Groups: NextPage = () => {
     }
   }, [uid, router, getGroups]);
 
+  useEffect(() => {
+    const statsMap: any = {};
+    if (selectedGroup?.users) {
+      Object.values(selectedGroup?.users).forEach((user: any) => {
+        statsMap[user.id] = {
+          id: user.id,
+          name: user.displayName,
+          total: 0,
+        };
+      });
+      if (transactions?.length) {
+        transactions.forEach((txn: any) => {
+          statsMap[txn.createdBy].total += parseFloat(txn.amount);
+        });
+      }
+      const groupTotal = Object.values(statsMap).reduce((acc: number, item: any) => {
+        return (acc += item.total);
+      }, 0);
+      setStats({ groupTotal, userStats: statsMap });
+    }
+  }, [transactions, selectedGroup]);
+
   return (
     <PrivateLayout>
       <Container className={styles.container}>
@@ -198,6 +222,21 @@ const Groups: NextPage = () => {
             handleSelectedGroup={handleSelectedGroup}
             handleDelete={handleDelete}
           />
+          {selectedGroup && (
+            <Card className={styles.statsCard}>
+              {stats.userStats &&
+                Object.values(stats.userStats).map((user: any) => (
+                  <div className={styles.userStats} key={user.id}>
+                    <Typography>{user.name}</Typography>
+                    <Typography>{ConvertToCurrency(user.total)}</Typography>
+                  </div>
+                ))}
+              <div className={styles.totalStats}>
+                <Typography>Total Group Expenses</Typography>
+                <Typography>{ConvertToCurrency(stats.groupTotal)}</Typography>
+              </div>
+            </Card>
+          )}
           {groups.length > 0 && (
             <>
               <div className={styles.filterSection}>

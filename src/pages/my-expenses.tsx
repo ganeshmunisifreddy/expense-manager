@@ -20,6 +20,7 @@ import {
   endOfYear,
   startOfYear,
 } from "date-fns";
+import MyExpenseStats from "../components/Stats/MyExpenseStats";
 
 const txnCollectionRef = collection(db, "expenses");
 
@@ -99,6 +100,7 @@ const MyExpenses: NextPage = () => {
         {isLoading && <Loader fullScreen />}
 
         <main className={styles.main}>
+          <MyExpenseStats transactions={transactions} month={dateFilter.month} />
           <div className={styles.filterSection}>
             <Typography variant="h6">Transactions</Typography>
             <Select value={dateFilter.month} onChange={handleMonthChange} size="small">

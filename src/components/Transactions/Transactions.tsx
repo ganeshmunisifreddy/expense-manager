@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Typography, IconButton, Card, Menu, MenuItem, Fab, Avatar } from "@mui/material";
-import { Wallet, Plus, DotsVertical } from "mdi-material-ui";
+import { Typography, IconButton, Card, Menu, MenuItem, Fab } from "@mui/material";
+import { Wallet, Plus, DotsVertical, Account } from "mdi-material-ui";
 import { doc, deleteDoc } from "firebase/firestore";
 
 import styles from "./Transactions.module.scss";
-import { ConvertToCurrency, formatDateText, stringAvatar } from "../../utils/common";
+import { ConvertToCurrency, formatDateText } from "../../utils/common";
 import AddTransaction from "./AddTransaction";
 import { db } from "../../firebase/config";
 import Loader from "../Loader";
@@ -84,20 +84,16 @@ const Transactions = (props: any) => {
                     <div style={{ flex: 6, overflow: "hidden" }}>
                       <Typography className={styles.description}>{txn.description}</Typography>
                       {selectedGroup && (
-                        <div className="flex">
-                          <Avatar
-                            variant="square"
+                        <Typography className={styles.account}>
+                          <Account
                             sx={{
+                              color: "#7635dc",
                               width: 16,
-                              height: 16,
-                              fontSize: "10px",
                               marginRight: "4px",
-                              background: "#7635dc",
-                            }}>
-                            {stringAvatar(txnUser)}
-                          </Avatar>
-                          <Typography className={styles.account}>{txnUser}</Typography>
-                        </div>
+                            }}
+                          />
+                          {txnUser}
+                        </Typography>
                       )}
                       {txn.account && !selectedGroup && (
                         <Typography className={styles.account}>

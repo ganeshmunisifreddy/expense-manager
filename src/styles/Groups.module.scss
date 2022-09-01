@@ -19,3 +19,27 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.statsCard {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: linear-gradient(45deg, #7635dc, #BC63C3, #FA8365);
+  color: white;
+}
+
+.userStats,
+.totalStats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.totalStats {
+  border-top: 1px dotted #ddd;
+  margin-top: 6px;
+  padding-top: 6px;
+
+  & p {
+    font-weight: bold;
+  }
+}

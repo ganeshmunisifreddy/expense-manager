@@ -8,6 +8,19 @@ import palette from "./palette";
 // Create a theme instance.
 const theme = createTheme({
   palette,
+  typography: {
+    fontFamily: [
+      "Prompt",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      '"Helvetica Neue"',
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+  },
   components: {
     ...Card,
     ...Button,

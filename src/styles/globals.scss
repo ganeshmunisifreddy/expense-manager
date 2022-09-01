@@ -4,7 +4,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, 'Prompt', Oxygen, Ubuntu, Cantarell,
     Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background-color: #f5f7f9;
 }
@@ -17,6 +17,8 @@ a {
 * {
   box-sizing: border-box;
   user-select: none;
+  font-family: 'Prompt',
+    sans-serif;
 }
 
 input {

@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import {
   Home,
   HomeOutline,
@@ -18,45 +18,48 @@ const Header = () => {
 
   return (
     <div className={styles.header}>
-      <Link href="/" passHref>
-        <IconButton>
-          {isActivePath("/") ? (
-            <Home
-              sx={{
-                color: "#7635dc",
-              }}
-            />
-          ) : (
-            <HomeOutline />
-          )}
-        </IconButton>
-      </Link>
-      <Link href="/groups" passHref>
-        <IconButton>
-          {isActivePath("/groups") ? (
-            <AccountGroup
-              sx={{
-                color: "#7635dc",
-              }}
-            />
-          ) : (
-            <AccountGroupOutline />
-          )}
-        </IconButton>
-      </Link>
-      <Link href="/profile" passHref>
-        <IconButton>
-          {isActivePath("/profile") ? (
-            <AccountCircle
-              sx={{
-                color: "#7635dc",
-              }}
-            />
-          ) : (
-            <AccountCircleOutline />
-          )}
-        </IconButton>
-      </Link>
+      <div className={styles.menuItem}>
+        <Link href="/" passHref>
+          <IconButton>
+            {isActivePath("/") ? (
+              <div className={styles.activeRoute}>
+                <Home />
+                <Typography>Home</Typography>
+              </div>
+            ) : (
+              <HomeOutline />
+            )}
+          </IconButton>
+        </Link>
+      </div>
+      <div className={styles.menuItem}>
+        <Link href="/groups" passHref>
+          <IconButton>
+            {isActivePath("/groups") ? (
+              <div className={styles.activeRoute}>
+                <AccountGroup />
+                <Typography>Groups</Typography>
+              </div>
+            ) : (
+              <AccountGroupOutline />
+            )}
+          </IconButton>
+        </Link>
+      </div>
+      <div className={styles.menuItem}>
+        <Link href="/profile" passHref>
+          <IconButton>
+            {isActivePath("/profile") ? (
+              <div className={styles.activeRoute}>
+                <AccountCircle />
+                <Typography>Profile</Typography>
+              </div>
+            ) : (
+              <AccountCircleOutline />
+            )}
+          </IconButton>
+        </Link>
+      </div>
     </div>
   );
 };

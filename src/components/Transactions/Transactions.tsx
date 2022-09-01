@@ -10,7 +10,7 @@ import { db } from "../../firebase/config";
 import Loader from "../Loader";
 
 const Transactions = (props: any) => {
-  const { data = [], getTransactions, selectedGroup, displayName = "" } = props;
+  const { data = [], getTransactions, selectedGroup } = props;
 
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -77,54 +77,57 @@ const Transactions = (props: any) => {
         <div className={styles.transactions}>
           {data?.length > 0 && (
             <div>
-              {data.map((txn: any, index: number) => (
-                <Card key={txn.id + "-" + index} className={styles.transaction}>
-                  <div style={{ flex: 6, overflow: "hidden" }}>
-                    <Typography className={styles.description}>{txn.description}</Typography>
-                    {selectedGroup && (
-                      <Typography className={styles.account}>
-                        <Avatar
-                          variant="square"
-                          sx={{
-                            width: 16,
-                            height: 16,
-                            fontSize: "10px",
-                            marginRight: "4px",
-                            background: "#7635dc",
-                          }}>
-                          {stringAvatar(displayName)}
-                        </Avatar>
-                        {displayName}
+              {data.map((txn: any, index: number) => {
+                const txnUser = selectedGroup?.users[txn.createdBy]?.displayName;
+                return (
+                  <Card key={txn.id + "-" + index} className={styles.transaction}>
+                    <div style={{ flex: 6, overflow: "hidden" }}>
+                      <Typography className={styles.description}>{txn.description}</Typography>
+                      {selectedGroup && (
+                        <div className="flex">
+                          <Avatar
+                            variant="square"
+                            sx={{
+                              width: 16,
+                              height: 16,
+                              fontSize: "10px",
+                              marginRight: "4px",
+                              background: "#7635dc",
+                            }}>
+                            {stringAvatar(txnUser)}
+                          </Avatar>
+                          <Typography className={styles.account}>{txnUser}</Typography>
+                        </div>
+                      )}
+                      {txn.account && !selectedGroup && (
+                        <Typography className={styles.account}>
+                          <Wallet
+                            sx={{
+                              color: "#7635dc",
+                              width: 16,
+                              marginRight: "4px",
+                            }}
+                          />
+                          {txn.account}
+                        </Typography>
+                      )}
+                    </div>
+                    <div style={{ flex: 3 }} className="text-right">
+                      <Typography className={styles.date}>
+                        {formatDateText(txn.date, txn.time)}
                       </Typography>
-                    )}
-                    {txn.account && !selectedGroup && (
-                      <Typography className={styles.account}>
-                        <Wallet
-                          sx={{
-                            color: "#7635dc",
-                            width: 16,
-                            marginRight: "4px",
-                          }}
-                        />
-                        {txn.account}
-                      </Typography>
-                    )}
-                  </div>
-                  <div style={{ flex: 3 }} className="text-right">
-                    <Typography className={styles.date}>
-                      {formatDateText(txn.date, txn.time)}
-                    </Typography>
-                    <Typography color="primary">{ConvertToCurrency(txn.amount)}</Typography>
-                  </div>
-                  <div style={{ flex: 1, textAlign: "right", cursor: "pointer" }}>
-                    <IconButton
-                      onClick={(e: any) => handleClick(e, txn.id)}
-                      style={{ marginLeft: 8 }}>
-                      <DotsVertical />
-                    </IconButton>
-                  </div>
-                </Card>
-              ))}
+                      <Typography color="primary">{ConvertToCurrency(txn.amount)}</Typography>
+                    </div>
+                    <div style={{ flex: 1, textAlign: "right", cursor: "pointer" }}>
+                      <IconButton
+                        onClick={(e: any) => handleClick(e, txn.id)}
+                        style={{ marginLeft: 8 }}>
+                        <DotsVertical />
+                      </IconButton>
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
           )}
 

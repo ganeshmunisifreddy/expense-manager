@@ -48,7 +48,7 @@ const Groups: NextPage = () => {
 
   const { currentUser }: any = useAuth();
 
-  const { uid = "", displayName = "" } = currentUser;
+  const { uid = "" } = currentUser;
 
   const router = useRouter();
 
@@ -214,7 +214,6 @@ const Groups: NextPage = () => {
                 data={transactions}
                 getTransactions={getGroupTransactions}
                 selectedGroup={selectedGroup}
-                displayName={displayName}
               />
             </>
           )}

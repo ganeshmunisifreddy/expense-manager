@@ -23,6 +23,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: capitalize;
+  margin-bottom: 4px;
 }
 
 .account {
@@ -37,6 +39,7 @@
 
 .date {
   font-size: 12px;
+  margin-bottom: 4px;
 }
 
 .formFields {

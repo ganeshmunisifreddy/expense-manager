@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Button, Typography, TextField, Card } from "@mui/material";
+import { Button, Typography, TextField, Card, Avatar } from "@mui/material";
 import { NextPage } from "next";
 import { useAuth } from "../contexts/AuthContext";
 import { updateProfile, signOut } from "firebase/auth";
@@ -11,6 +11,7 @@ import PrivateLayout from "../layouts/PrivateLayout";
 import Loader from "../components/Loader/Loader";
 import { setDoc, doc } from "firebase/firestore";
 import { db, auth } from "../firebase/config";
+import { stringAvatar } from "../utils/common";
 
 const Profile: NextPage = () => {
   const [name, setName] = useState<string>("");
@@ -70,7 +71,10 @@ const Profile: NextPage = () => {
     <PrivateLayout>
       <div className={styles.root}>
         <Card className={styles.profileCard}>
-          <Typography>Update Profile</Typography>
+          <Avatar sx={{ width: 72, height: 72, background: "#7635dc" }}>
+            {stringAvatar(displayName)}
+          </Avatar>
+          <Typography>{phoneNumber}</Typography>
           <TextField
             size="small"
             label="Display Name"

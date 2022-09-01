@@ -48,7 +48,7 @@ const Groups: NextPage = () => {
 
   const { currentUser }: any = useAuth();
 
-  const userId: string = currentUser?.uid || "";
+  const { uid = "", displayName = "" } = currentUser;
 
   const router = useRouter();
 
@@ -81,7 +81,7 @@ const Groups: NextPage = () => {
   const getGroups = useCallback(async () => {
     setIsLoading(true);
     try {
-      const q = query(groupCollectionRef, where(`users.${userId}.id`, "==", userId));
+      const q = query(groupCollectionRef, where(`users.${uid}.id`, "==", uid));
       const data = await getDocs(q);
       const groupsData =
         data.docs
@@ -99,7 +99,7 @@ const Groups: NextPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [uid]);
 
   const handleSave = async (newGroup: any, closeModal: any) => {
     setIsLoading(true);
@@ -174,12 +174,12 @@ const Groups: NextPage = () => {
   }, [getGroupTransactions]);
 
   useEffect(() => {
-    if (userId) {
+    if (uid) {
       getGroups();
     } else {
       router.replace("/login");
     }
-  }, [userId, router, getGroups]);
+  }, [uid, router, getGroups]);
 
   return (
     <PrivateLayout>
@@ -214,6 +214,7 @@ const Groups: NextPage = () => {
                 data={transactions}
                 getTransactions={getGroupTransactions}
                 selectedGroup={selectedGroup}
+                displayName={displayName}
               />
             </>
           )}

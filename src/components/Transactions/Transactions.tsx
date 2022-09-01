@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { Typography, IconButton, Card, Menu, MenuItem, Fab } from "@mui/material";
+import { Typography, IconButton, Card, Menu, MenuItem, Fab, Avatar } from "@mui/material";
 import { Wallet, Plus, DotsVertical } from "mdi-material-ui";
 import { doc, deleteDoc } from "firebase/firestore";
 
 import styles from "./Transactions.module.scss";
-import { ConvertToCurrency, formatDateText } from "../../utils/common";
+import { ConvertToCurrency, formatDateText, stringAvatar } from "../../utils/common";
 import AddTransaction from "./AddTransaction";
 import { db } from "../../firebase/config";
 import Loader from "../Loader";
 
 const Transactions = (props: any) => {
-  const { data = [], getTransactions, selectedGroup } = props;
+  const { data = [], getTransactions, selectedGroup, displayName = "" } = props;
 
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -81,7 +81,23 @@ const Transactions = (props: any) => {
                 <Card key={txn.id + "-" + index} className={styles.transaction}>
                   <div style={{ flex: 6, overflow: "hidden" }}>
                     <Typography className={styles.description}>{txn.description}</Typography>
-                    {txn.account && (
+                    {selectedGroup && (
+                      <Typography className={styles.account}>
+                        <Avatar
+                          variant="square"
+                          sx={{
+                            width: 16,
+                            height: 16,
+                            fontSize: "10px",
+                            marginRight: "4px",
+                            background: "#7635dc",
+                          }}>
+                          {stringAvatar(displayName)}
+                        </Avatar>
+                        {displayName}
+                      </Typography>
+                    )}
+                    {txn.account && !selectedGroup && (
                       <Typography className={styles.account}>
                         <Wallet
                           sx={{

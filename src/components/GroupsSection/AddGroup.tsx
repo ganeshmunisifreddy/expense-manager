@@ -17,7 +17,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import styles from "./GroupsSection.module.scss";
 import { db } from "../../firebase/config";
 import { useAuth } from "../../contexts/AuthContext";
-import { SearchIcon, XIcon } from "@heroicons/react/outline";
+import { AccountSearch } from "mdi-material-ui";
 import Loader from "../Loader";
 import { stringAvatar } from "../../utils/common";
 
@@ -158,8 +158,14 @@ const AddGroup = (props: any) => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton onClick={getUser} className={styles.searchBtn}>
-                          <SearchIcon height={16} color="#333" />
+                        <IconButton onClick={getUser}>
+                          <AccountSearch
+                            sx={{
+                              color: "#7635dc",
+                              width: 20,
+                              height: 20,
+                            }}
+                          />
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -193,7 +199,7 @@ const AddGroup = (props: any) => {
                         <IconButton
                           className={styles.removeBtn}
                           onClick={() => deleteUser(user.id)}>
-                          <XIcon height={16} color="#ff0000" />
+                          {/* <XIcon height={16} color="#ff0000" /> */}
                         </IconButton>
                       )}
                     </Card>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography, IconButton, Card, Menu, MenuItem, Fab } from "@mui/material";
-import { CreditCardIcon, DotsVerticalIcon, PlusIcon } from "@heroicons/react/outline";
+import { Wallet, Plus, DotsVertical } from "mdi-material-ui";
 import { doc, deleteDoc } from "firebase/firestore";
 
 import styles from "./Transactions.module.scss";
@@ -83,10 +83,12 @@ const Transactions = (props: any) => {
                     <Typography className={styles.description}>{txn.description}</Typography>
                     {txn.account && (
                       <Typography className={styles.account}>
-                        <CreditCardIcon
-                          height={16}
-                          color="#7635dc"
-                          className={styles.accountIcon}
+                        <Wallet
+                          sx={{
+                            color: "#7635dc",
+                            width: 16,
+                            marginRight: "4px",
+                          }}
                         />
                         {txn.account}
                       </Typography>
@@ -102,7 +104,7 @@ const Transactions = (props: any) => {
                     <IconButton
                       onClick={(e: any) => handleClick(e, txn.id)}
                       style={{ marginLeft: 8 }}>
-                      <DotsVerticalIcon height={16} color="#7635dc" />
+                      <DotsVertical />
                     </IconButton>
                   </div>
                 </Card>
@@ -116,7 +118,11 @@ const Transactions = (props: any) => {
           </Menu>
 
           <Fab size="medium" color="primary" className={styles.fabBtn} onClick={openModal}>
-            <PlusIcon height={16} color="#FFFFFF" />
+            <Plus
+              sx={{
+                color: "#ffffff",
+              }}
+            />
           </Fab>
 
           {data?.length === 0 && (

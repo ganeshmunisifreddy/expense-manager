@@ -3,7 +3,7 @@ import Head from "next/head";
 import { collection, getDocs, query, orderBy, limit, where } from "firebase/firestore";
 import { useEffect, useState, useCallback } from "react";
 import { Typography, Container, Card } from "@mui/material";
-import { UserGroupIcon, UserIcon } from "@heroicons/react/outline";
+import { AccountGroupOutline, AccountOutline } from "mdi-material-ui";
 import { useRouter } from "next/router";
 
 import { db } from "../firebase/config";
@@ -69,13 +69,13 @@ const Home: NextPage = () => {
           <div className={styles.cards}>
             <Link href="/my-expenses" passHref>
               <Card className={styles.myExpenses}>
-                <UserIcon height={32} color="#212b36" />
+                <AccountOutline sx={{ fontSize: 32 }} />
                 <Typography>My Expenses</Typography>
               </Card>
             </Link>
             <Link href="/groups" passHref>
               <Card className={styles.homeExpenses}>
-                <UserGroupIcon height={32} color="#212b36" />
+                <AccountGroupOutline sx={{ fontSize: 32 }} />
                 <Typography>Groups</Typography>
               </Card>
             </Link>

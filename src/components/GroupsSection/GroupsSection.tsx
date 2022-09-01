@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography, Card, Button, Menu, MenuItem, IconButton } from "@mui/material";
-import { PlusIcon, DotsVerticalIcon } from "@heroicons/react/outline";
+import { Plus, DotsVertical } from "mdi-material-ui";
 import styles from "./GroupsSection.module.scss";
 import AddGroup from "./AddGroup";
 
@@ -52,7 +52,15 @@ const GroupsSection = (props: any) => {
       <div className={styles.groupsSection}>
         <div className="flex items-center justify-between">
           <Typography variant="h6">Groups</Typography>
-          <Button startIcon={<PlusIcon height={16} color="#7635dc" />} onClick={openModal}>
+          <Button
+            startIcon={
+              <Plus
+                sx={{
+                  color: "#7635dc",
+                }}
+              />
+            }
+            onClick={openModal}>
             Add Group
           </Button>
         </div>
@@ -69,7 +77,7 @@ const GroupsSection = (props: any) => {
                 <div className={styles.groupInfo}>
                   <Typography>{group.name}</Typography>
                   <IconButton onClick={(e: any) => handleClick(e, group)} style={{ marginLeft: 8 }}>
-                    <DotsVerticalIcon height={16} color="#7635dc" />
+                    <DotsVertical sx={{ height: 16 }} />
                   </IconButton>
                 </div>
               </Card>

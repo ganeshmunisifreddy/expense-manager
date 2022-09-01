@@ -1,34 +1,60 @@
 import React from "react";
 import { IconButton } from "@mui/material";
-import { HomeIcon, UsersIcon, UserCircleIcon } from "@heroicons/react/outline";
-
+import {
+  Home,
+  HomeOutline,
+  AccountGroup,
+  AccountGroupOutline,
+  AccountCircle,
+  AccountCircleOutline,
+} from "mdi-material-ui";
 import styles from "./Header.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 const Header = () => {
   const router = useRouter();
-  const getActiveColor = (path: string) => {
-    if (path === router.pathname) {
-      return "#7635dc";
-    }
-    return "#000000bf";
-  };
+  const isActivePath = (path: string) => path === router.pathname;
+
   return (
     <div className={styles.header}>
       <Link href="/" passHref>
         <IconButton>
-          <HomeIcon height={24} color={getActiveColor("/")} />
+          {isActivePath("/") ? (
+            <Home
+              sx={{
+                color: "#7635dc",
+              }}
+            />
+          ) : (
+            <HomeOutline />
+          )}
         </IconButton>
       </Link>
       <Link href="/groups" passHref>
         <IconButton>
-          <UsersIcon height={24} color={getActiveColor("/groups")} />
+          {isActivePath("/groups") ? (
+            <AccountGroup
+              sx={{
+                color: "#7635dc",
+              }}
+            />
+          ) : (
+            <AccountGroupOutline />
+          )}
         </IconButton>
       </Link>
       <Link href="/profile" passHref>
         <IconButton>
-          <UserCircleIcon height={24} color={getActiveColor("/profile")} />
+          {isActivePath("/profile") ? (
+            <AccountCircle
+              sx={{
+                color: "#7635dc",
+              }}
+            />
+          ) : (
+            <AccountCircleOutline />
+          )}
         </IconButton>
       </Link>
     </div>

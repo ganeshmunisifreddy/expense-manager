@@ -48,9 +48,9 @@ const Groups: NextPage = () => {
   });
   const [stats, setStats] = useState<any>({});
 
-  const { currentUser }: any = useAuth();
+  const { user }: any = useAuth();
 
-  const { uid = "" } = currentUser;
+  const { uid = "" } = user;
 
   const router = useRouter();
 
@@ -108,7 +108,7 @@ const Groups: NextPage = () => {
     try {
       const newGroupDoc = {
         ...newGroup,
-        createdBy: currentUser?.uid || "",
+        createdBy: user?.uid || "",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };

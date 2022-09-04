@@ -18,10 +18,10 @@ const Profile: NextPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string>("");
 
-  const { currentUser }: any = useAuth();
+  const { user }: any = useAuth();
   const router = useRouter();
 
-  const { uid = "", phoneNumber, displayName = "" } = currentUser;
+  const { uid = "", phoneNumber, displayName = "" } = user;
 
   const userRef = doc(db, "users", uid);
 
@@ -47,7 +47,7 @@ const Profile: NextPage = () => {
     setIsLoading(true);
     setErrMsg("");
     try {
-      await updateProfile(currentUser, {
+      await updateProfile(user, {
         displayName: name,
       });
       await setDoc(userRef, {

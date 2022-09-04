@@ -79,7 +79,7 @@ const AddTransaction = (props: any) => {
     selectedGroup,
   } = props;
 
-  const { currentUser }: any = useAuth();
+  const { user }: any = useAuth();
 
   const [newTransaction, setNewTransaction] = useState<any>(initialTransaction);
 
@@ -129,7 +129,7 @@ const AddTransaction = (props: any) => {
       } else {
         const newTxn = {
           ...newTransaction,
-          createdBy: currentUser?.uid || "",
+          createdBy: user?.uid || "",
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           ...(selectedGroup?.id && { groupId: selectedGroup?.id }),

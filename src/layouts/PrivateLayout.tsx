@@ -11,11 +11,11 @@ type Props = {
 };
 
 const PrivateLayout = ({ children }: Props) => {
-  const { currentUser }: any = useAuth();
+  const { user }: any = useAuth();
 
-  const userId: string = currentUser?.uid || "";
+  const userId: string = user?.uid || "";
 
-  const displayName: string = currentUser?.displayName || "";
+  const displayName: string = user?.displayName || "";
 
   const router = useRouter();
 

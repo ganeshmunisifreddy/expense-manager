@@ -1,31 +1,65 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { collection, getDocs, query, orderBy, limit, where } from "firebase/firestore";
-import { useEffect, useState, useCallback } from "react";
-import { Typography, Container, Card } from "@mui/material";
-import { AccountGroupOutline, AccountOutline } from "mdi-material-ui";
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { Container, MenuItem, Select, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
 import { db } from "../firebase/config";
 import Loader from "../components/Loader/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
-import styles from "../styles/Home.module.scss";
+import styles from "../styles/MyExpenses.module.scss";
 import Transactions from "../components/Transactions";
 import PrivateLayout from "../layouts/PrivateLayout";
-import Link from "next/link";
+import {
+  startOfMonth,
+  endOfMonth,
+  format,
+  eachMonthOfInterval,
+  endOfYear,
+  startOfYear,
+} from "date-fns";
+import MyExpenseStats from "../components/Stats/MyExpenseStats";
 
 const txnCollectionRef = collection(db, "expenses");
 
-const Home: NextPage = () => {
+const MyExpenses: NextPage = () => {
   const [transactions, setTransactions] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [dateFilter, setDateFilter] = useState<any>({
+    fromDate: format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    toDate: format(endOfMonth(new Date()), "yyyy-MM-dd"),
+    month: format(new Date(), "MMMM"),
+  });
 
-  const { currentUser }: any = useAuth();
+  const { user }: any = useAuth();
 
-  const userId: string = currentUser?.uid || "";
+  const userId: string = user?.uid || "";
 
   const router = useRouter();
+
+  const selectData = useMemo(() => {
+    return eachMonthOfInterval({
+      start: startOfYear(new Date()),
+      end: endOfYear(new Date()),
+    }).reduce((acc: any, item: any) => {
+      const month = format(item, "MMMM");
+      return {
+        ...acc,
+        [month]: {
+          fromDate: format(startOfMonth(item), "yyyy-MM-dd"),
+          toDate: format(endOfMonth(item), "yyyy-MM-dd"),
+          month: format(item, "MMMM"),
+        },
+      };
+    }, {});
+  }, []);
+
+  const handleMonthChange = (e: any) => {
+    const value = e.target.value;
+    setDateFilter(selectData[value]);
+  };
 
   const getTransactions = useCallback(async () => {
     setIsLoading(true);
@@ -33,8 +67,9 @@ const Home: NextPage = () => {
       txnCollectionRef,
       orderBy("date", "desc"),
       orderBy("time", "desc"),
+      where("date", ">=", dateFilter.fromDate),
+      where("date", "<=", dateFilter.toDate),
       where("createdBy", "==", userId),
-      limit(10),
     );
     try {
       const data = await getDocs(q);
@@ -45,13 +80,11 @@ const Home: NextPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [userId, dateFilter]);
 
   useEffect(() => {
     if (userId) {
       getTransactions();
-    } else {
-      router.replace("/login");
     }
   }, [userId, router, getTransactions]);
 
@@ -66,28 +99,22 @@ const Home: NextPage = () => {
         {isLoading && <Loader fullScreen />}
 
         <main className={styles.main}>
-          <div className={styles.cards}>
-            <Link href="/my-expenses" passHref>
-              <Card className={styles.myExpenses}>
-                <AccountOutline sx={{ fontSize: 32 }} />
-                <Typography>My Expenses</Typography>
-              </Card>
-            </Link>
-            <Link href="/groups" passHref>
-              <Card className={styles.homeExpenses}>
-                <AccountGroupOutline sx={{ fontSize: 32 }} />
-                <Typography>Groups</Typography>
-              </Card>
-            </Link>
+          <div className={styles.filterSection}>
+            <Typography variant="h6">Transactions</Typography>
+            <Select value={dateFilter.month} onChange={handleMonthChange} size="small">
+              {Object.values(selectData).map((item: any) => (
+                <MenuItem key={item.month} value={item.month}>
+                  {item.month}
+                </MenuItem>
+              ))}
+            </Select>
           </div>
-          <div>
-            <Typography variant="subtitle1">Recent Transactions</Typography>
-            <Transactions data={transactions} getTransactions={getTransactions} />
-          </div>
+          <MyExpenseStats transactions={transactions} month={dateFilter.month} />
+          <Transactions data={transactions} getTransactions={getTransactions} />
         </main>
       </Container>
     </PrivateLayout>
   );
 };
 
-export default Home;
+export default MyExpenses;

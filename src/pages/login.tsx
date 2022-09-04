@@ -28,7 +28,7 @@ const Login = () => {
 
   const router = useRouter();
 
-  const { currentUser } = useAuth();
+  const { user } = useAuth();
 
   const generateRecaptcha = async () => {
     if (window.recaptchaVerifier) {
@@ -95,10 +95,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (currentUser) {
+    if (user) {
       router.replace("/");
     }
-  }, [currentUser, router]);
+  }, [user, router]);
 
   return (
     <div className={styles.root}>

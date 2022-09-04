@@ -32,9 +32,9 @@ const userCollectionRef = collection(db, "users");
 const AddGroup = (props: any) => {
   const { open, onClose, onSave, activeGroup } = props;
 
-  const { currentUser }: any = useAuth();
+  const { user }: any = useAuth();
 
-  const { uid = "", displayName = "", phoneNumber = "" } = currentUser || {};
+  const { uid = "", displayName = "", phoneNumber = "" } = user || {};
   const { id: activeGroupId = "" } = activeGroup || {};
 
   const [newGroup, setNewGroup] = useState<any>({ ...initialGroup });

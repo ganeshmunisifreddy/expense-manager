@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import createEmotionCache from "../mui/createEmotionCache";
-import AuthProvider from "../contexts/AuthContext";
+import { AuthProvider } from "../contexts/AuthContext";
 import theme from "../mui/theme";
 
 // Client-side cache, shared for the whole session of the user in the browser.

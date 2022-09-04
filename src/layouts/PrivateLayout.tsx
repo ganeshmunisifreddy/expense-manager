@@ -24,8 +24,6 @@ const PrivateLayout = ({ children }: Props) => {
       if (!displayName && router.pathname !== "/profile") {
         router.replace("/profile");
       }
-    } else {
-      router.replace("/login");
     }
   }, [userId, displayName, router]);
 

@@ -16,14 +16,6 @@ import { format } from "date-fns";
 import { deleteKeys } from "../../utils/common";
 import { useAuth } from "../../contexts/AuthContext";
 
-const initialTransaction = {
-  amount: "",
-  description: "",
-  account: "",
-  date: format(new Date(), "yyyy-MM-dd"),
-  time: format(new Date(), "HH:mm"),
-};
-
 const FIELDS = [
   {
     label: "Amount",
@@ -81,7 +73,13 @@ const AddTransaction = (props: any) => {
 
   const { user }: any = useAuth();
 
-  const [newTransaction, setNewTransaction] = useState<any>(initialTransaction);
+  const [newTransaction, setNewTransaction] = useState<any>({
+    amount: "",
+    description: "",
+    account: "",
+    date: format(new Date(), "yyyy-MM-dd"),
+    time: format(new Date(), "HH:mm"),
+  });
 
   const txnCollectionRef = collection(db, "expenses");
 
@@ -103,7 +101,13 @@ const AddTransaction = (props: any) => {
 
   const resetTransaction = () => {
     handleEditMode("");
-    setNewTransaction({ ...initialTransaction });
+    setNewTransaction({
+      amount: "",
+      description: "",
+      account: "",
+      date: format(new Date(), "yyyy-MM-dd"),
+      time: format(new Date(), "HH:mm"),
+    });
     toggleLoading(false);
     onClose();
     getTransactions();

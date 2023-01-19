@@ -78,6 +78,7 @@ const Groups: NextPage = () => {
 
   const handleSelectedGroup = (group: any) => {
     setSelectedGroup(group);
+    setTransactions([]);
   };
 
   const getGroups = useCallback(async () => {
@@ -193,6 +194,7 @@ const Groups: NextPage = () => {
           total: 0,
         };
       });
+      console.log(statsMap, transactions);
       if (transactions?.length) {
         transactions.forEach((txn: any) => {
           statsMap[txn.createdBy].total += parseFloat(txn.amount);

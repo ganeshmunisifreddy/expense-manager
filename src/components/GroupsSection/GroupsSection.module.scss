@@ -27,7 +27,7 @@
 }
 
 .selectedGroup {
-  background: $primary-color;
+  background: $primary-color !important;
   color: #fff;
 
   & p {
@@ -80,5 +80,11 @@
 @media screen and (max-width: 320px) {
   .formFields {
     min-width: auto;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .groupCard {
+    background-color: #303030;
   }
 }

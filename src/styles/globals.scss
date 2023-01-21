@@ -4,7 +4,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, 'Prompt', Oxygen, Ubuntu, Cantarell,
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, 'Public Sans', Oxygen, Ubuntu, Cantarell,
     Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background-color: #f5f7f9;
 }
@@ -17,7 +17,7 @@ a {
 * {
   box-sizing: border-box;
   user-select: none;
-  font-family: 'Prompt',
+  font-family: 'Public Sans',
     sans-serif;
 }
 
@@ -66,5 +66,48 @@ input::-webkit-inner-spin-button {
 
 /* Firefox */
 input[type=number] {
+  appearance: textfield;
   -moz-appearance: textfield;
+}
+
+@media screen and (min-width: 768px) {
+  .sticky {
+    position: sticky;
+    top: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+
+  html,
+  body {
+    background-color: #252525;
+    color: #f5f7f9;
+  }
+
+  * {
+    box-shadow: none;
+  }
+
+  a,
+  input,
+  p,
+  label,
+  div,
+  svg {
+    color: #f5f7f9 !important;
+  }
+
+  div,
+  button {
+    box-shadow: none !important;
+  }
+
+  fieldset {
+    border-color: #f5f7f9 !important;
+  }
+
+  .MuiMenu-paper {
+    background-color: #222;
+  }
 }

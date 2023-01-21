@@ -7,3 +7,9 @@
 .layoutContent {
   flex: 1;
 }
+
+@media screen and (min-width: 768px) {
+  .layoutContent {
+    margin-left: 240px;
+  }
+}

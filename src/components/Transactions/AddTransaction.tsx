@@ -152,7 +152,7 @@ const AddTransaction = (props: any) => {
       open={open}
       //onClose={onClose}
     >
-      <form onSubmit={handleSave}>
+      <form onSubmit={handleSave} className={styles.form}>
         <DialogTitle align="center">
           <Typography>{transactionId ? "Edit Expense" : "Add Expense"}</Typography>
         </DialogTitle>

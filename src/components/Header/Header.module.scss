@@ -2,9 +2,9 @@
 
 .header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-around;
-  background-color: white;
+  background-color: #303030;
   padding: 8px 24px;
   box-shadow: 0 0 16px #ccc;
   position: fixed;
@@ -14,25 +14,83 @@
   height: 64px;
 }
 
-.menuItem {
-  flex: 1;
+.logo {
+  padding: 16px 0;
+  font-size: 24px;
+  color: #FA8365;
+  display: none;
+}
+
+.menu {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.menuButton {
+  color: #f5f7f9;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  padding: 8px;
+  line-height: unset;
+  box-shadow: none;
 }
 
-.activeRoute {
-  background-color: $primary-color;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 6px 16px;
-  border-radius: 32px;
-  font-size: 12px;
+.menuLabelMobile {
+  display: block;
+  padding-left: 8px;
+}
 
-  & svg {
-    fill: white;
-    margin-right: 8px;
-    margin-bottom: 2px;
+.menuLabelDesktop {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .header {
+    background-color: #222;
+    color: #f5f7f9;
+    box-shadow: none;
+  }
+
+  @media screen and (min-width: 768px) {
+    .header {
+      background-color: #303030;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .header {
+    width: 240px;
+    height: 100vh;
+    padding: 8px;
+  }
+
+  .logo {
+    display: block;
+  }
+
+  .menu {
+    margin-top: 24px;
+    flex-direction: column;
+  }
+
+  .menuButton {
+    margin-top: 12px;
+    padding: 8px 24px;
+    justify-content: flex-start;
+  }
+
+  .menuLabelMobile {
+    display: none;
+  }
+
+  .menuLabelDesktop {
+    display: block;
+    padding-left: 12px;
   }
 }

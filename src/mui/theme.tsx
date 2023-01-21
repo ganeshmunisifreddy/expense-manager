@@ -10,7 +10,7 @@ const theme = createTheme({
   palette,
   typography: {
     fontFamily: [
-      "Prompt",
+      "Public Sans",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',

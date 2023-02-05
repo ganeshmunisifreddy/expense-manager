@@ -126,7 +126,7 @@ const AddTransaction = (props: any) => {
             ...newTransaction,
             updatedAt: serverTimestamp(),
           };
-          updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt"]);
+          updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt", "updatedAt"]);
           await updateDoc(docRef, updatedTxn);
           resetTransaction();
         }
@@ -137,6 +137,7 @@ const AddTransaction = (props: any) => {
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           ...(selectedGroup?.id && { groupId: selectedGroup?.id }),
+          //...(selectedGroup?.id && { groupName: selectedGroup?.name }),
         };
         await addDoc(txnCollectionRef, newTxn);
         resetTransaction();

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Container, MenuItem, Select, Typography } from "@mui/material";
+import { Container, MenuItem, Select, Stack, Switch, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
 import { db } from "../firebase/config";
@@ -27,17 +27,24 @@ const txnCollectionRef = collection(db, "expenses");
 const MyExpenses: NextPage = () => {
   const [transactions, setTransactions] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showGroupTxns, setShowGroupTxns] = useState<boolean>(false);
   const [dateFilter, setDateFilter] = useState<any>({
     fromDate: format(startOfMonth(new Date()), "yyyy-MM-dd"),
     toDate: format(endOfMonth(new Date()), "yyyy-MM-dd"),
     month: format(new Date(), "MMMM"),
   });
 
-  const { user }: any = useAuth();
+  const router = useRouter();
 
+  const { user }: any = useAuth();
   const userId: string = user?.uid || "";
 
-  const router = useRouter();
+  const filteredTransactions = transactions.filter((txn: any) => {
+    if (!showGroupTxns) {
+      return !txn.groupId;
+    }
+    return txn;
+  });
 
   const selectData = useMemo(() => {
     return eachMonthOfInterval({
@@ -59,6 +66,10 @@ const MyExpenses: NextPage = () => {
   const handleMonthChange = (e: any) => {
     const value = e.target.value;
     setDateFilter(selectData[value]);
+  };
+
+  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setShowGroupTxns(event.target.checked);
   };
 
   const getTransactions = useCallback(async () => {
@@ -110,7 +121,11 @@ const MyExpenses: NextPage = () => {
             </Select>
           </div>
           <MyExpenseStats transactions={transactions} month={dateFilter.month} />
-          <Transactions data={transactions} getTransactions={getTransactions} />
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Typography>Group Transactions</Typography>
+            <Switch checked={showGroupTxns} onChange={handleToggle} />
+          </Stack>
+          <Transactions data={filteredTransactions} getTransactions={getTransactions} />
         </main>
       </Container>
     </PrivateLayout>

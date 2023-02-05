@@ -194,7 +194,6 @@ const Groups: NextPage = () => {
           total: 0,
         };
       });
-      console.log(statsMap, transactions);
       if (transactions?.length) {
         transactions.forEach((txn: any) => {
           statsMap[txn.createdBy].total += parseFloat(txn.amount);

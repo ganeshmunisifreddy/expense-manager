@@ -120,7 +120,7 @@ const MyExpenses: NextPage = () => {
               ))}
             </Select>
           </div>
-          <MyExpenseStats transactions={transactions} month={dateFilter.month} />
+          <MyExpenseStats transactions={filteredTransactions} month={dateFilter.month} />
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography>Group Transactions</Typography>
             <Switch checked={showGroupTxns} onChange={handleToggle} />

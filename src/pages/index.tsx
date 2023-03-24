@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { Container, MenuItem, Select, Stack, Switch, Typography } from "@mui/material";
+import { useEffect, useState, useCallback } from "react";
+import { Container, Stack, Switch, Typography } from "@mui/material";
 import { useRouter } from "next/router";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
 import { db } from "../firebase/config";
 import Loader from "../components/Loader/Loader";
@@ -12,14 +13,7 @@ import { useAuth } from "../contexts/AuthContext";
 import styles from "../styles/MyExpenses.module.scss";
 import Transactions from "../components/Transactions";
 import PrivateLayout from "../layouts/PrivateLayout";
-import {
-  startOfMonth,
-  endOfMonth,
-  format,
-  eachMonthOfInterval,
-  endOfYear,
-  startOfYear,
-} from "date-fns";
+import { startOfMonth, endOfMonth, format } from "date-fns";
 import MyExpenseStats from "../components/Stats/MyExpenseStats";
 
 const txnCollectionRef = collection(db, "expenses");
@@ -27,12 +21,9 @@ const txnCollectionRef = collection(db, "expenses");
 const MyExpenses: NextPage = () => {
   const [transactions, setTransactions] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showGroupTxns, setShowGroupTxns] = useState<boolean>(false);
-  const [dateFilter, setDateFilter] = useState<any>({
-    fromDate: format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    toDate: format(endOfMonth(new Date()), "yyyy-MM-dd"),
-    month: format(new Date(), "MMMM"),
-  });
+  const [dateMonth, setDateMonth] = useState<any>(startOfMonth(new Date()));
 
   const router = useRouter();
 
@@ -46,26 +37,12 @@ const MyExpenses: NextPage = () => {
     return txn;
   });
 
-  const selectData = useMemo(() => {
-    return eachMonthOfInterval({
-      start: startOfYear(new Date()),
-      end: endOfYear(new Date()),
-    }).reduce((acc: any, item: any) => {
-      const month = format(item, "MMMM");
-      return {
-        ...acc,
-        [month]: {
-          fromDate: format(startOfMonth(item), "yyyy-MM-dd"),
-          toDate: format(endOfMonth(item), "yyyy-MM-dd"),
-          month: format(item, "MMMM"),
-        },
-      };
-    }, {});
-  }, []);
+  const handleDateChange = (value: any) => {
+    setDateMonth(value);
+  };
 
-  const handleMonthChange = (e: any) => {
-    const value = e.target.value;
-    setDateFilter(selectData[value]);
+  const handleMonthChange = () => {
+    setIsOpen(false);
   };
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,12 +51,14 @@ const MyExpenses: NextPage = () => {
 
   const getTransactions = useCallback(async () => {
     setIsLoading(true);
+    const fromDate = format(startOfMonth(new Date(dateMonth)), "yyyy-MM-dd");
+    const toDate = format(endOfMonth(new Date(dateMonth)), "yyyy-MM-dd");
     const q = query(
       txnCollectionRef,
       orderBy("date", "desc"),
       orderBy("time", "desc"),
-      where("date", ">=", dateFilter.fromDate),
-      where("date", "<=", dateFilter.toDate),
+      where("date", ">=", fromDate),
+      where("date", "<=", toDate),
       where("createdBy", "==", userId),
     );
     try {
@@ -91,7 +70,7 @@ const MyExpenses: NextPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [userId, dateFilter]);
+  }, [userId, dateMonth]);
 
   useEffect(() => {
     if (userId) {
@@ -112,15 +91,34 @@ const MyExpenses: NextPage = () => {
         <main className={styles.main}>
           <div className={styles.filterSection}>
             <Typography variant="h6">Transactions</Typography>
-            <Select value={dateFilter.month} onChange={handleMonthChange} size="small">
-              {Object.values(selectData).map((item: any) => (
-                <MenuItem key={item.month} value={item.month}>
-                  {item.month}
-                </MenuItem>
-              ))}
-            </Select>
+            <DesktopDatePicker
+              open={isOpen}
+              value={dateMonth}
+              format="MMM yyyy"
+              views={["month", "year"]}
+              onOpen={() => setIsOpen(true)}
+              onClose={() => setIsOpen(false)}
+              onChange={handleDateChange}
+              onMonthChange={handleMonthChange}
+              selectedSections="month"
+              slotProps={{
+                textField: {
+                  size: "small",
+                  sx: {
+                    maxWidth: 144,
+                    input: {
+                      textAlign: "center!important",
+                    },
+                  },
+                },
+              }}
+              disableFuture
+            />
           </div>
-          <MyExpenseStats transactions={filteredTransactions} month={dateFilter.month} />
+          <MyExpenseStats
+            transactions={filteredTransactions}
+            month={format(new Date(dateMonth), "MMMM")}
+          />
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography>Group Transactions</Typography>
             <Switch checked={showGroupTxns} onChange={handleToggle} />

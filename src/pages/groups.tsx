@@ -11,9 +11,10 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { Container, MenuItem, Select, Typography, Card } from "@mui/material";
+import { useEffect, useState, useCallback } from "react";
+import { Container, Typography, Card } from "@mui/material";
 import { useRouter } from "next/router";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
 import { db } from "../firebase/config";
 import Loader from "../components/Loader/Loader";
@@ -22,14 +23,7 @@ import { useAuth } from "../contexts/AuthContext";
 import styles from "../styles/Groups.module.scss";
 import Transactions from "../components/Transactions";
 import PrivateLayout from "../layouts/PrivateLayout";
-import {
-  startOfMonth,
-  endOfMonth,
-  format,
-  eachMonthOfInterval,
-  endOfYear,
-  startOfYear,
-} from "date-fns";
+import { startOfMonth, endOfMonth, format } from "date-fns";
 import GroupsSection from "../components/GroupsSection";
 import { ConvertToCurrency } from "../utils/common";
 
@@ -41,11 +35,8 @@ const Groups: NextPage = () => {
   const [transactions, setTransactions] = useState<any>([]);
   const [selectedGroup, setSelectedGroup] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [dateFilter, setDateFilter] = useState<any>({
-    fromDate: format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    toDate: format(endOfMonth(new Date()), "yyyy-MM-dd"),
-    month: format(new Date(), "MMMM"),
-  });
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [dateMonth, setDateMonth] = useState<any>(startOfMonth(new Date()));
   const [stats, setStats] = useState<any>({});
 
   const { user }: any = useAuth();
@@ -54,26 +45,12 @@ const Groups: NextPage = () => {
 
   const router = useRouter();
 
-  const selectData = useMemo(() => {
-    return eachMonthOfInterval({
-      start: startOfYear(new Date()),
-      end: endOfYear(new Date()),
-    }).reduce((acc: any, item: any) => {
-      const month = format(item, "MMMM");
-      return {
-        ...acc,
-        [month]: {
-          fromDate: format(startOfMonth(item), "yyyy-MM-dd"),
-          toDate: format(endOfMonth(item), "yyyy-MM-dd"),
-          month: format(item, "MMMM"),
-        },
-      };
-    }, {});
-  }, []);
+  const handleDateChange = (value: any) => {
+    setDateMonth(value);
+  };
 
-  const handleMonthChange = (e: any) => {
-    const value = e.target.value;
-    setDateFilter(selectData[value]);
+  const handleMonthChange = () => {
+    setIsOpen(false);
   };
 
   const handleSelectedGroup = (group: any) => {
@@ -153,13 +130,15 @@ const Groups: NextPage = () => {
       return;
     }
     setIsLoading(true);
+    const fromDate = format(startOfMonth(new Date(dateMonth)), "yyyy-MM-dd");
+    const toDate = format(endOfMonth(new Date(dateMonth)), "yyyy-MM-dd");
     try {
       const q = query(
         txnCollectionRef,
         orderBy("date", "desc"),
         orderBy("time", "desc"),
-        where("date", ">=", dateFilter.fromDate),
-        where("date", "<=", dateFilter.toDate),
+        where("date", ">=", fromDate),
+        where("date", "<=", toDate),
         where("groupId", "==", selectedGroup.id),
       );
       const data = await getDocs(q);
@@ -170,7 +149,7 @@ const Groups: NextPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [dateFilter, selectedGroup]);
+  }, [dateMonth, selectedGroup]);
 
   useEffect(() => {
     getGroupTransactions();
@@ -242,13 +221,29 @@ const Groups: NextPage = () => {
             <>
               <div className={styles.filterSection}>
                 <Typography variant="h6">{selectedGroup?.name}</Typography>
-                <Select value={dateFilter.month} onChange={handleMonthChange} size="small">
-                  {Object.values(selectData).map((item: any) => (
-                    <MenuItem key={item.month} value={item.month}>
-                      {item.month}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <DesktopDatePicker
+                  open={isOpen}
+                  value={dateMonth}
+                  format="MMM yyyy"
+                  views={["month", "year"]}
+                  onOpen={() => setIsOpen(true)}
+                  onClose={() => setIsOpen(false)}
+                  onChange={handleDateChange}
+                  onMonthChange={handleMonthChange}
+                  selectedSections="month"
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        maxWidth: 144,
+                        input: {
+                          textAlign: "center!important",
+                        },
+                      },
+                    },
+                  }}
+                  disableFuture
+                />
               </div>
               <Transactions
                 data={transactions}

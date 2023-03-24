@@ -4,6 +4,8 @@ import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import dynamic from "next/dynamic";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import createEmotionCache from "../mui/createEmotionCache";
@@ -28,7 +30,9 @@ function MyApp(props: MyAppProps) {
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <Component {...pageProps} />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Component {...pageProps} />
+          </LocalizationProvider>
         </ThemeProvider>
       </AuthProvider>
     </CacheProvider>

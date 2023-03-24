@@ -20,6 +20,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { AccountSearch } from "mdi-material-ui";
 import Loader from "../Loader";
 import { stringAvatar } from "../../utils/common";
+import Iconify from "../Iconify";
 
 const initialGroup = Object.freeze({
   name: "",
@@ -199,7 +200,7 @@ const AddGroup = (props: any) => {
                         <IconButton
                           className={styles.removeBtn}
                           onClick={() => deleteUser(user.id)}>
-                          {/* <XIcon height={16} color="#ff0000" /> */}
+                          <Iconify icon="mdi:close" height={16} color="#ff0000" />
                         </IconButton>
                       )}
                     </Card>

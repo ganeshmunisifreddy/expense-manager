@@ -75,57 +75,54 @@ const Transactions = (props: any) => {
       {isLoading && <Loader fullScreen />}
       <div className={styles.root}>
         <div className={styles.transactions}>
-          {data?.length > 0 && (
-            <div>
-              {data.map((txn: any, index: number) => {
-                const txnUser = selectedGroup?.users[txn.createdBy]?.displayName;
-                return (
-                  <Card key={txn.id + "-" + index} className={styles.transaction}>
-                    <div style={{ flex: 6, overflow: "hidden" }}>
-                      <Typography className={styles.description}>{txn.description}</Typography>
-                      {selectedGroup && (
-                        <Typography className={styles.account}>
-                          <Account
-                            sx={{
-                              color: "#7635dc",
-                              width: 16,
-                              marginRight: "4px",
-                            }}
-                          />
-                          {txnUser}
-                        </Typography>
-                      )}
-                      {txn.account && !selectedGroup && (
-                        <Typography className={styles.account}>
-                          <Wallet
-                            sx={{
-                              color: "#7635dc",
-                              width: 16,
-                              marginRight: "4px",
-                            }}
-                          />
-                          {txn.account}
-                        </Typography>
-                      )}
-                    </div>
-                    <div style={{ flex: 3 }} className="text-right">
-                      <Typography className={styles.date}>
-                        {formatDateText(txn.date, txn.time)}
+          {data?.length > 0 &&
+            data.map((txn: any, index: number) => {
+              const txnUser = selectedGroup?.users[txn.createdBy]?.displayName;
+              return (
+                <Card key={txn.id + "-" + index} className={styles.transaction}>
+                  <div style={{ flex: 6, overflow: "hidden" }}>
+                    <Typography className={styles.description}>{txn.description}</Typography>
+                    <Typography className={styles.date}>
+                      {formatDateText(txn.date, txn.time)}
+                    </Typography>
+                  </div>
+                  <div style={{ flex: 3 }} className="text-right">
+                    <Typography color="primary">{ConvertToCurrency(txn.amount)}</Typography>
+                    {selectedGroup && (
+                      <Typography className={styles.account}>
+                        <Account
+                          sx={{
+                            color: "#7635dc",
+                            width: 16,
+                            marginRight: "4px",
+                          }}
+                        />
+                        {txnUser}
                       </Typography>
-                      <Typography color="primary">{ConvertToCurrency(txn.amount)}</Typography>
-                    </div>
-                    <div style={{ flex: 1, textAlign: "right", cursor: "pointer" }}>
-                      <IconButton
-                        onClick={(e: any) => handleClick(e, txn.id)}
-                        style={{ marginLeft: 8 }}>
-                        <DotsVertical />
-                      </IconButton>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+                    )}
+                    {txn.account && !selectedGroup && (
+                      <Typography className={styles.account}>
+                        <Wallet
+                          sx={{
+                            color: "#7635dc",
+                            width: 16,
+                            marginRight: "4px",
+                          }}
+                        />
+                        {txn.account}
+                      </Typography>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, textAlign: "right", cursor: "pointer" }}>
+                    <IconButton
+                      onClick={(e: any) => handleClick(e, txn.id)}
+                      style={{ marginLeft: 8 }}>
+                      <DotsVertical />
+                    </IconButton>
+                  </div>
+                </Card>
+              );
+            })}
 
           <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
             <MenuItem onClick={() => handleAction("edit")}>Edit</MenuItem>

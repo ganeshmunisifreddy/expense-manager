@@ -52,15 +52,7 @@ const GroupsSection = (props: any) => {
       <div className={styles.groupsSection}>
         <div className="flex items-center justify-between">
           <Typography variant="h6">Groups</Typography>
-          <Button
-            startIcon={
-              <Plus
-                sx={{
-                  color: "#7635dc",
-                }}
-              />
-            }
-            onClick={openModal}>
+          <Button variant="contained" startIcon={<Plus />} onClick={openModal}>
             Add Group
           </Button>
         </div>

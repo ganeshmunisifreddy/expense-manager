@@ -9,7 +9,7 @@
 }
 
 .transaction {
-  padding: 16px 24px;
+  padding: 12px 24px;
   margin-bottom: 12px;
   display: flex;
   align-items: center;
@@ -29,6 +29,7 @@
 .account {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   font-size: 12px;
 }
 
@@ -38,7 +39,7 @@
 
 .date {
   font-size: 12px;
-  margin-bottom: 4px;
+  margin-top: 4px;
 }
 
 .formFields {
@@ -86,8 +87,6 @@
   }
 
   .form {
-    background-color: #303030;
-
     input {
       color-scheme: dark;
     }

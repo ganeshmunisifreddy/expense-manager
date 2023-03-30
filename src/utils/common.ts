@@ -18,7 +18,8 @@ export const convertTimeToMeridiem = (time: string) => {
   const [h, m] = time.split(":").map(Number);
   const AmOrPm = h >= 12 ? "pm" : "am";
   const hours = h % 12 || 12;
-  return `${hours}:${m} ${AmOrPm}`;
+  const minutes = m.toString().padStart(2, "0");
+  return `${hours}:${minutes} ${AmOrPm}`;
 };
 
 export const stringAvatar = (text: string): string => {

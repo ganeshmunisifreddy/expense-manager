@@ -9,6 +9,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 import styles from "../styles/Login.module.scss";
 import Backgrounds from "../components/Backgrounds";
+import Head from "next/head";
 
 declare global {
   interface Window {
@@ -102,6 +103,9 @@ const Login = () => {
 
   return (
     <div className={styles.root}>
+      <Head>
+        <title>Login - Expense Manager</title>
+      </Head>
       <Backgrounds text="Welcome" />
       <div className={styles.container}>
         <Card className={styles.loginCard}>
@@ -112,10 +116,14 @@ const Login = () => {
             <TextField
               type="text"
               label="Phone Number"
-              placeholder="98765 43210"
+              placeholder="9876543210"
               value={phone}
               fullWidth
-              onChange={(e: any) => setPhone(e.target.value)}
+              onChange={(e: any) => {
+                const value = e.target.value;
+                if (value.length > 10) return;
+                setPhone(value);
+              }}
               required
               disabled={isOtpSent || isLoading}
               InputProps={{

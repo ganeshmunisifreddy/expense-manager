@@ -78,6 +78,8 @@ const MyExpenses: NextPage = () => {
     }
   }, [userId, router, getTransactions]);
 
+  if (!userId) return null;
+
   return (
     <PrivateLayout>
       <Container className={styles.container}>

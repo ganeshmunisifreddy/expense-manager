@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Typography, IconButton, Card, Menu, MenuItem, Fab } from "@mui/material";
-import { Wallet, Plus, DotsVertical, Account } from "mdi-material-ui";
 import { doc, deleteDoc } from "firebase/firestore";
 
 import styles from "./Transactions.module.scss";
@@ -8,6 +7,7 @@ import { ConvertToCurrency, formatDateText } from "../../utils/common";
 import AddTransaction from "./AddTransaction";
 import { db } from "../../firebase/config";
 import Loader from "../Loader";
+import Iconify from "../Iconify";
 
 const Transactions = (props: any) => {
   const { data = [], getTransactions, selectedGroup } = props;
@@ -90,25 +90,17 @@ const Transactions = (props: any) => {
                     <Typography color="primary">{ConvertToCurrency(txn.amount)}</Typography>
                     {selectedGroup && (
                       <Typography className={styles.account}>
-                        <Account
-                          sx={{
-                            color: "#7635dc",
-                            width: 16,
-                            marginRight: "4px",
-                          }}
+                        <Iconify
+                          icon="mingcute:user-3-fill"
+                          width={14}
+                          sx={{ marginRight: "4px" }}
                         />
                         {txnUser}
                       </Typography>
                     )}
                     {txn.account && !selectedGroup && (
                       <Typography className={styles.account}>
-                        <Wallet
-                          sx={{
-                            color: "#7635dc",
-                            width: 16,
-                            marginRight: "4px",
-                          }}
-                        />
+                        <Iconify icon="solar:wallet-bold" width={16} sx={{ marginRight: "4px" }} />
                         {txn.account}
                       </Typography>
                     )}
@@ -117,7 +109,7 @@ const Transactions = (props: any) => {
                     <IconButton
                       onClick={(e: any) => handleClick(e, txn.id)}
                       style={{ marginLeft: 8 }}>
-                      <DotsVertical />
+                      <Iconify icon="mdi:dots-vertical" />
                     </IconButton>
                   </div>
                 </Card>
@@ -130,11 +122,7 @@ const Transactions = (props: any) => {
           </Menu>
 
           <Fab size="medium" color="primary" className={styles.fabBtn} onClick={openModal}>
-            <Plus
-              sx={{
-                color: "#ffffff",
-              }}
-            />
+            <Iconify icon="fluent:add-12-filled" />
           </Fab>
 
           {data?.length === 0 && (

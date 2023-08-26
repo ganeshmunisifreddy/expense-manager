@@ -37,19 +37,15 @@ const Login = () => {
       return;
     }
 
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      "recaptcha-container",
-      {
-        size: "invisible",
-        callback: () => {
-          //callback
-        },
-        errorCallback: (response: any) => {
-          console.error(response);
-        },
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      size: "invisible",
+      callback: () => {
+        //callback
       },
-      auth,
-    );
+      errorCallback: (response: any) => {
+        console.error(response);
+      },
+    });
     window.recaptchaWidgetId = await window.recaptchaVerifier.render();
   };
 
@@ -170,7 +166,6 @@ const Login = () => {
           </Typography>
         )}
       </div>
-      <div id="recaptcha-container"></div>
     </div>
   );
 };

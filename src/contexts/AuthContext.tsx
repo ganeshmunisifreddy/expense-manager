@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: any) => {
         if (user) {
           setCurrentUser(user);
         } else {
+          setCurrentUser(null);
           router.push("/login");
         }
       }, 1000);

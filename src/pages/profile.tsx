@@ -21,7 +21,7 @@ const Profile: NextPage = () => {
   const { user }: any = useAuth();
   const router = useRouter();
 
-  const { uid = "", phoneNumber, displayName = "" } = user;
+  const { uid = "", phoneNumber, displayName = "" } = user || {};
 
   const userRef = doc(db, "users", uid);
 

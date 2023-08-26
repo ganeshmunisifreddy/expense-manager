@@ -34,7 +34,6 @@ const Login = () => {
   const generateRecaptcha = async () => {
     if (window.recaptchaVerifier) {
       window.recaptchaVerifier.recaptcha.reset(window.recaptchaWidgetId);
-      return;
     }
 
     window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
@@ -166,6 +165,7 @@ const Login = () => {
           </Typography>
         )}
       </div>
+      <div id="recaptcha-container"></div>
     </div>
   );
 };

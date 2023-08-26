@@ -26,7 +26,6 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <div id="recaptcha-container"></div>
         </body>
       </Html>
     );

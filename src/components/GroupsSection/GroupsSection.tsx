@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Typography, Card, Button, Menu, MenuItem, IconButton } from "@mui/material";
-import { Plus, DotsVertical } from "mdi-material-ui";
 import styles from "./GroupsSection.module.scss";
 import AddGroup from "./AddGroup";
+import Iconify from "../Iconify";
 
 const GroupsSection = (props: any) => {
   const { groups = [], handleSave, selectedGroup, handleSelectedGroup, handleDelete } = props;
@@ -52,7 +52,10 @@ const GroupsSection = (props: any) => {
       <div className={styles.groupsSection}>
         <div className="flex items-center justify-between">
           <Typography variant="h6">Groups</Typography>
-          <Button variant="contained" startIcon={<Plus />} onClick={openModal}>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="icon-park-outline:add" width={20} />}
+            onClick={openModal}>
             Add Group
           </Button>
         </div>
@@ -69,7 +72,7 @@ const GroupsSection = (props: any) => {
                 <div className={styles.groupInfo}>
                   <Typography>{group.name}</Typography>
                   <IconButton onClick={(e: any) => handleClick(e, group)} style={{ marginLeft: 8 }}>
-                    <DotsVertical sx={{ height: 16 }} />
+                    <Iconify icon="mdi:dots-vertical" width={20} />
                   </IconButton>
                 </div>
               </Card>

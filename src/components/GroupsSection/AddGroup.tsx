@@ -17,7 +17,6 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import styles from "./GroupsSection.module.scss";
 import { db } from "../../firebase/config";
 import { useAuth } from "../../contexts/AuthContext";
-import { AccountSearch } from "mdi-material-ui";
 import Loader from "../Loader";
 import { stringAvatar } from "../../utils/common";
 import Iconify from "../Iconify";
@@ -160,13 +159,7 @@ const AddGroup = (props: any) => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton onClick={getUser}>
-                          <AccountSearch
-                            sx={{
-                              color: "#7635dc",
-                              width: 20,
-                              height: 20,
-                            }}
-                          />
+                          <Iconify icon="mingcute:user-search-line" height={16} />
                         </IconButton>
                       </InputAdornment>
                     ),

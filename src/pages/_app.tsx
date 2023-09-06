@@ -9,7 +9,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import createEmotionCache from "../mui/createEmotionCache";
-import { AuthProvider } from "../contexts/AuthContext";
+import { AuthContextProvider } from "../contexts/AuthContext";
 import theme from "../mui/theme";
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -26,7 +26,7 @@ function MyApp(props: MyAppProps) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <AuthProvider>
+      <AuthContextProvider>
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline enableColorScheme />
@@ -34,7 +34,7 @@ function MyApp(props: MyAppProps) {
             <Component {...pageProps} />
           </LocalizationProvider>
         </ThemeProvider>
-      </AuthProvider>
+      </AuthContextProvider>
     </CacheProvider>
   );
 }

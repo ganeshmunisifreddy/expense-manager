@@ -15,6 +15,7 @@ import Transactions from "../components/Transactions";
 import PrivateLayout from "../layouts/PrivateLayout";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import MyExpenseStats from "../components/Stats/MyExpenseStats";
+import AuthGuard from "../guards/AuthGuard";
 
 const txnCollectionRef = collection(db, "expenses");
 
@@ -78,57 +79,59 @@ const MyExpenses: NextPage = () => {
     }
   }, [userId, router, getTransactions]);
 
-  if (!userId) return null;
+  //if (!userId) return null;
 
   return (
-    <PrivateLayout>
-      <Container className={styles.container}>
-        <Head>
-          <title>Expense Manager</title>
-          <meta name="description" content="Expense Manager - Nine Technology" />
-        </Head>
+    <AuthGuard>
+      <PrivateLayout>
+        <Container className={styles.container}>
+          <Head>
+            <title>Expense Manager</title>
+            <meta name="description" content="Expense Manager - Nine Technology" />
+          </Head>
 
-        {isLoading && <Loader fullScreen />}
+          {isLoading && <Loader fullScreen />}
 
-        <main className={styles.main}>
-          <div className={styles.filterSection}>
-            <Typography variant="h6">Transactions</Typography>
-            <DesktopDatePicker
-              open={isOpen}
-              value={dateMonth}
-              format="MMM yyyy"
-              views={["month", "year"]}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
-              onChange={handleDateChange}
-              onMonthChange={handleMonthChange}
-              selectedSections="month"
-              slotProps={{
-                textField: {
-                  size: "small",
-                  sx: {
-                    maxWidth: 144,
-                    input: {
-                      textAlign: "center!important",
+          <main className={styles.main}>
+            <div className={styles.filterSection}>
+              <Typography variant="h6">Transactions</Typography>
+              <DesktopDatePicker
+                open={isOpen}
+                value={dateMonth}
+                format="MMM yyyy"
+                views={["month", "year"]}
+                onOpen={() => setIsOpen(true)}
+                onClose={() => setIsOpen(false)}
+                onChange={handleDateChange}
+                onMonthChange={handleMonthChange}
+                selectedSections="month"
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      maxWidth: 144,
+                      input: {
+                        textAlign: "center!important",
+                      },
                     },
                   },
-                },
-              }}
-              disableFuture
+                }}
+                disableFuture
+              />
+            </div>
+            <MyExpenseStats
+              transactions={filteredTransactions}
+              month={format(new Date(dateMonth), "MMMM")}
             />
-          </div>
-          <MyExpenseStats
-            transactions={filteredTransactions}
-            month={format(new Date(dateMonth), "MMMM")}
-          />
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography>Group Transactions</Typography>
-            <Switch checked={showGroupTxns} onChange={handleToggle} />
-          </Stack>
-          <Transactions data={filteredTransactions} getTransactions={getTransactions} />
-        </main>
-      </Container>
-    </PrivateLayout>
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Typography>Group Transactions</Typography>
+              <Switch checked={showGroupTxns} onChange={handleToggle} />
+            </Stack>
+            <Transactions data={filteredTransactions} getTransactions={getTransactions} />
+          </main>
+        </Container>
+      </PrivateLayout>
+    </AuthGuard>
   );
 };
 

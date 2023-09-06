@@ -26,6 +26,7 @@ import PrivateLayout from "../layouts/PrivateLayout";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import GroupsSection from "../components/GroupsSection";
 import { ConvertToCurrency } from "../utils/common";
+import AuthGuard from "../guards/AuthGuard";
 
 const txnCollectionRef = collection(db, "expenses");
 const groupCollectionRef = collection(db, "groups");
@@ -41,7 +42,7 @@ const Groups: NextPage = () => {
 
   const { user }: any = useAuth();
 
-  const { uid = "" } = user;
+  const { uid = "" } = user || {};
 
   const router = useRouter();
 
@@ -186,75 +187,77 @@ const Groups: NextPage = () => {
   }, [transactions, selectedGroup]);
 
   return (
-    <PrivateLayout>
-      <Container className={styles.container}>
-        <Head>
-          <title>Groups | Expense Manager</title>
-        </Head>
+    <AuthGuard>
+      <PrivateLayout>
+        <Container className={styles.container}>
+          <Head>
+            <title>Groups | Expense Manager</title>
+          </Head>
 
-        {isLoading && <Loader fullScreen />}
+          {isLoading && <Loader fullScreen />}
 
-        <main className={styles.main}>
-          <GroupsSection
-            groups={groups}
-            handleSave={handleSave}
-            selectedGroup={selectedGroup}
-            handleSelectedGroup={handleSelectedGroup}
-            handleDelete={handleDelete}
-          />
-          {selectedGroup && (
-            <Card className={styles.statsCard}>
-              {stats.userStats &&
-                Object.values(stats.userStats).map((user: any) => (
-                  <div className={styles.userStats} key={user.id}>
-                    <Typography>{user.name}</Typography>
-                    <Typography>{ConvertToCurrency(user.total)}</Typography>
-                  </div>
-                ))}
-              <div className={styles.totalStats}>
-                <Typography>Total Group Expenses</Typography>
-                <Typography>{ConvertToCurrency(stats.groupTotal)}</Typography>
-              </div>
-            </Card>
-          )}
-          {groups.length > 0 && (
-            <>
-              <div className={styles.filterSection}>
-                <Typography variant="h6">{selectedGroup?.name}</Typography>
-                <DesktopDatePicker
-                  open={isOpen}
-                  value={dateMonth}
-                  format="MMM yyyy"
-                  views={["month", "year"]}
-                  onOpen={() => setIsOpen(true)}
-                  onClose={() => setIsOpen(false)}
-                  onChange={handleDateChange}
-                  onMonthChange={handleMonthChange}
-                  selectedSections="month"
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      sx: {
-                        maxWidth: 144,
-                        input: {
-                          textAlign: "center!important",
+          <main className={styles.main}>
+            <GroupsSection
+              groups={groups}
+              handleSave={handleSave}
+              selectedGroup={selectedGroup}
+              handleSelectedGroup={handleSelectedGroup}
+              handleDelete={handleDelete}
+            />
+            {selectedGroup && (
+              <Card className={styles.statsCard}>
+                {stats.userStats &&
+                  Object.values(stats.userStats).map((user: any) => (
+                    <div className={styles.userStats} key={user.id}>
+                      <Typography>{user.name}</Typography>
+                      <Typography>{ConvertToCurrency(user.total)}</Typography>
+                    </div>
+                  ))}
+                <div className={styles.totalStats}>
+                  <Typography>Total Group Expenses</Typography>
+                  <Typography>{ConvertToCurrency(stats.groupTotal)}</Typography>
+                </div>
+              </Card>
+            )}
+            {groups.length > 0 && (
+              <>
+                <div className={styles.filterSection}>
+                  <Typography variant="h6">{selectedGroup?.name}</Typography>
+                  <DesktopDatePicker
+                    open={isOpen}
+                    value={dateMonth}
+                    format="MMM yyyy"
+                    views={["month", "year"]}
+                    onOpen={() => setIsOpen(true)}
+                    onClose={() => setIsOpen(false)}
+                    onChange={handleDateChange}
+                    onMonthChange={handleMonthChange}
+                    selectedSections="month"
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        sx: {
+                          maxWidth: 144,
+                          input: {
+                            textAlign: "center!important",
+                          },
                         },
                       },
-                    },
-                  }}
-                  disableFuture
+                    }}
+                    disableFuture
+                  />
+                </div>
+                <Transactions
+                  data={transactions}
+                  getTransactions={getGroupTransactions}
+                  selectedGroup={selectedGroup}
                 />
-              </div>
-              <Transactions
-                data={transactions}
-                getTransactions={getGroupTransactions}
-                selectedGroup={selectedGroup}
-              />
-            </>
-          )}
-        </main>
-      </Container>
-    </PrivateLayout>
+              </>
+            )}
+          </main>
+        </Container>
+      </PrivateLayout>
+    </AuthGuard>
   );
 };
 

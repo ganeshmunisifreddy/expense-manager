@@ -13,7 +13,6 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState, useCallback } from "react";
 import { Container, Typography, Card } from "@mui/material";
-import { useRouter } from "next/router";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
 import { db } from "../firebase/config";
@@ -43,8 +42,6 @@ const Groups: NextPage = () => {
   const { user }: any = useAuth();
 
   const { uid = "" } = user || {};
-
-  const router = useRouter();
 
   const handleDateChange = (value: any) => {
     setDateMonth(value);
@@ -159,10 +156,8 @@ const Groups: NextPage = () => {
   useEffect(() => {
     if (uid) {
       getGroups();
-    } else {
-      router.replace("/login");
     }
-  }, [uid, router, getGroups]);
+  }, [uid, getGroups]);
 
   useEffect(() => {
     const statsMap: any = {};

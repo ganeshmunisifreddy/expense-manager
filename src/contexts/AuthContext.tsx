@@ -15,14 +15,15 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const logout = async () => {
     setCurrentUser(null);
+    localStorage.removeItem("isAuthenticated");
     await signOut(auth);
   };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      //console.log(user);
       if (user) {
         setCurrentUser(user);
+        localStorage.setItem("isAuthenticated", "true");
       } else {
         setCurrentUser(null);
       }

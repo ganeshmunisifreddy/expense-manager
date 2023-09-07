@@ -126,8 +126,8 @@ const Transactions = (props: any) => {
           </Fab>
 
           {data?.length === 0 && (
-            <Typography variant="h6" style={{ textAlign: "center" }}>
-              No Transactions
+            <Typography variant="h6" style={{ textAlign: "center", marginTop: 128 }}>
+              No Expenses
             </Typography>
           )}
         </div>

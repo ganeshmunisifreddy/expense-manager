@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(45deg, black, #303030);
   padding: 8px 24px;
   box-shadow: 0 0 16px #ccc;
   position: fixed;
@@ -15,9 +14,10 @@
 }
 
 .logo {
-  padding: 16px 0;
-  font-size: 24px;
-  color: #FA8365;
+  object-fit: contain;
+  width: 90%;
+  height: auto;
+  margin-top: 12;
   display: none;
 }
 
@@ -51,14 +51,17 @@
 
 @media (prefers-color-scheme: dark) {
   .header {
-    background: #222;
+    background: #161c24;
     color: #f5f7f9;
     box-shadow: none;
+    border-top: 1px solid #919eab33;
+    border-right: none;
   }
 
   @media screen and (min-width: 768px) {
     .header {
-      background: #303030;
+      border-top: none;
+      border-right: 1px dashed #919eab33;
     }
   }
 }
@@ -67,7 +70,7 @@
   .header {
     width: 240px;
     height: 100vh;
-    padding: 8px;
+    padding: 24px;
   }
 
   .logo {

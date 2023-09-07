@@ -1,138 +1,179 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
-import { useEffect, useState, useCallback } from "react";
-import { Container, Stack, Switch, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Card, InputAdornment, TextField, Typography, Button } from "@mui/material";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { useRouter } from "next/router";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
-import { db } from "../firebase/config";
+import { auth } from "../firebase/config";
 import Loader from "../components/Loader/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
-import styles from "../styles/MyExpenses.module.scss";
-import Transactions from "../components/Transactions";
-import PrivateLayout from "../layouts/PrivateLayout";
-import { startOfMonth, endOfMonth, format } from "date-fns";
-import MyExpenseStats from "../components/Stats/MyExpenseStats";
-import AuthGuard from "../guards/AuthGuard";
+import styles from "../styles/Login.module.scss";
+import Backgrounds from "../components/Backgrounds";
+import Head from "next/head";
 
-const txnCollectionRef = collection(db, "expenses");
+declare global {
+  interface Window {
+    recaptchaVerifier: any;
+    confirmationResult: any;
+    recaptchaWidgetId: any;
+  }
+}
 
-const MyExpenses: NextPage = () => {
-  const [transactions, setTransactions] = useState<any>([]);
+const Login = () => {
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+
+  const [isOtpSent, setIsOtpSent] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [showGroupTxns, setShowGroupTxns] = useState<boolean>(false);
-  const [dateMonth, setDateMonth] = useState<any>(startOfMonth(new Date()));
+  const [errMsg, setErrMsg] = useState<string>("");
 
   const router = useRouter();
 
-  const { user }: any = useAuth();
-  const userId: string = user?.uid || "";
+  const { user } = useAuth();
 
-  const filteredTransactions = transactions.filter((txn: any) => {
-    if (!showGroupTxns) {
-      return !txn.groupId;
+  const generateRecaptcha = async () => {
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.recaptcha.reset(window.recaptchaWidgetId);
     }
-    return txn;
-  });
 
-  const handleDateChange = (value: any) => {
-    setDateMonth(value);
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      size: "invisible",
+      callback: () => {
+        //callback
+      },
+      errorCallback: (response: any) => {
+        console.error(response);
+      },
+    });
+    window.recaptchaWidgetId = await window.recaptchaVerifier.render();
   };
 
-  const handleMonthChange = () => {
-    setIsOpen(false);
-  };
-
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setShowGroupTxns(event.target.checked);
-  };
-
-  const getTransactions = useCallback(async () => {
+  const getOtp = (e: any) => {
+    e.preventDefault();
+    if (phone.length !== 10) {
+      return alert("Please enter valid phone number");
+    }
+    setErrMsg("");
     setIsLoading(true);
-    const fromDate = format(startOfMonth(new Date(dateMonth)), "yyyy-MM-dd");
-    const toDate = format(endOfMonth(new Date(dateMonth)), "yyyy-MM-dd");
-    const q = query(
-      txnCollectionRef,
-      orderBy("date", "desc"),
-      orderBy("time", "desc"),
-      where("date", ">=", fromDate),
-      where("date", "<=", toDate),
-      where("createdBy", "==", userId),
-    );
-    try {
-      const data = await getDocs(q);
-      const transactions = data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) || [];
-      setTransactions(transactions);
-    } catch (e: any) {
-      console.error(e.message);
-    } finally {
-      setIsLoading(false);
+    generateRecaptcha();
+    const appVerifier = window.recaptchaVerifier;
+    signInWithPhoneNumber(auth, "+91" + phone, appVerifier)
+      .then((confirmationResult) => {
+        setIsOtpSent(true);
+        setIsLoading(false);
+        window.confirmationResult = confirmationResult;
+      })
+      .catch((e: any) => {
+        console.error(e.message);
+        setIsLoading(false);
+        setErrMsg(e.message);
+      });
+  };
+
+  const verifyOtp = (e: any) => {
+    e.preventDefault();
+    setErrMsg("");
+    setIsLoading(true);
+    if (otp.length !== 6) {
+      return setErrMsg("Please enter valid OTP");
     }
-  }, [userId, dateMonth]);
+    const confirmationResult = window.confirmationResult;
+    confirmationResult
+      .confirm(otp)
+      .then(() => {
+        setIsLoading(false);
+        //const user = result.user;
+        router.replace("/expenses");
+      })
+      .catch((e: any) => {
+        setIsLoading(false);
+        setErrMsg(e.message);
+        console.error(e.message);
+      });
+  };
 
   useEffect(() => {
-    if (userId) {
-      getTransactions();
+    if (user) {
+      router.replace("/expenses");
     }
-  }, [userId, router, getTransactions]);
-
-  //if (!userId) return null;
+  }, [user, router]);
 
   return (
-    <AuthGuard>
-      <PrivateLayout>
-        <Container className={styles.container}>
-          <Head>
-            <title>Expense Manager</title>
-            <meta name="description" content="Expense Manager - Nine Technology" />
-          </Head>
-
-          {isLoading && <Loader fullScreen />}
-
-          <main className={styles.main}>
-            <div className={styles.filterSection}>
-              <Typography variant="h6">Transactions</Typography>
-              <DesktopDatePicker
-                open={isOpen}
-                value={dateMonth}
-                format="MMM yyyy"
-                views={["month", "year"]}
-                onOpen={() => setIsOpen(true)}
-                onClose={() => setIsOpen(false)}
-                onChange={handleDateChange}
-                onMonthChange={handleMonthChange}
-                selectedSections="month"
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    sx: {
-                      maxWidth: 144,
-                      input: {
-                        textAlign: "center!important",
-                      },
-                    },
-                  },
+    <div className={styles.root}>
+      <Head>
+        <title>Login - Expense Manager</title>
+      </Head>
+      <Backgrounds text="Welcome" />
+      <div className={styles.container}>
+        <Card className={styles.loginCard}>
+          <Typography variant="h6" className={styles.title}>
+            Login
+          </Typography>
+          <form onSubmit={isOtpSent ? verifyOtp : getOtp}>
+            <div className={styles.inputField}>
+              <TextField
+                type="text"
+                label="Phone Number"
+                placeholder="9876543210"
+                value={phone}
+                fullWidth
+                onChange={(e: any) => {
+                  const value = e.target.value;
+                  if (value.length > 10) return;
+                  setPhone(value);
                 }}
-                disableFuture
+                required
+                disabled={isOtpSent || isLoading}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">+91</InputAdornment>,
+                }}
               />
             </div>
-            <MyExpenseStats
-              transactions={filteredTransactions}
-              month={format(new Date(dateMonth), "MMMM")}
-            />
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography>Group Transactions</Typography>
-              <Switch checked={showGroupTxns} onChange={handleToggle} />
-            </Stack>
-            <Transactions data={filteredTransactions} getTransactions={getTransactions} />
-          </main>
-        </Container>
-      </PrivateLayout>
-    </AuthGuard>
+            {isOtpSent && (
+              <div className={styles.inputField}>
+                <TextField
+                  type="number"
+                  label="OTP"
+                  placeholder="Enter OTP"
+                  value={otp}
+                  fullWidth
+                  onChange={(e: any) => setOtp(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <div className={styles.inputField}>
+              {isOtpSent ? (
+                <Button
+                  variant="contained"
+                  type="submit"
+                  className={styles.submitBtn}
+                  //onClick={verifyOtp}
+                  disabled={isLoading}>
+                  {isLoading ? <Loader size={20} /> : "Verify"}
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  type="submit"
+                  className={styles.submitBtn}
+                  //onClick={getOtp}
+                  disabled={isLoading}>
+                  {isLoading ? <Loader size={20} /> : "Login"}
+                </Button>
+              )}
+            </div>
+          </form>
+        </Card>
+        {errMsg && (
+          <Typography color="error" className={styles.errorMessage}>
+            {errMsg}
+          </Typography>
+        )}
+      </div>
+      <div id="recaptcha-container"></div>
+    </div>
   );
 };
 
-export default MyExpenses;
+export default Login;

@@ -27,7 +27,7 @@ const Profile: NextPage = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      router.push("/login");
+      router.push("/");
     } catch (e: any) {
       console.error(e);
     }

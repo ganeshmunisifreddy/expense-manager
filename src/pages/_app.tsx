@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import dynamic from "next/dynamic";
+//import dynamic from "next/dynamic";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
@@ -24,7 +24,8 @@ function MyApp(props: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        {/* <meta name="viewport" content="initial-scale=1, width=device-width" /> */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
       <AuthContextProvider>
         <ThemeProvider theme={theme}>
@@ -39,6 +40,8 @@ function MyApp(props: MyAppProps) {
   );
 }
 
-export default dynamic(() => Promise.resolve(MyApp), {
-  ssr: false,
-});
+export default MyApp;
+
+// export default dynamic(() => Promise.resolve(MyApp), {
+//   ssr: false,
+// });

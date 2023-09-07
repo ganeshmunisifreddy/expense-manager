@@ -48,7 +48,8 @@ const Login = () => {
     window.recaptchaWidgetId = await window.recaptchaVerifier.render();
   };
 
-  const getOtp = () => {
+  const getOtp = (e: any) => {
+    e.preventDefault();
     if (phone.length !== 10) {
       return alert("Please enter valid phone number");
     }
@@ -69,7 +70,8 @@ const Login = () => {
       });
   };
 
-  const verifyOtp = () => {
+  const verifyOtp = (e: any) => {
+    e.preventDefault();
     setErrMsg("");
     setIsLoading(true);
     if (otp.length !== 6) {
@@ -107,57 +109,61 @@ const Login = () => {
           <Typography variant="h6" className={styles.title}>
             Login
           </Typography>
-          <div className={styles.inputField}>
-            <TextField
-              type="text"
-              label="Phone Number"
-              placeholder="9876543210"
-              value={phone}
-              fullWidth
-              onChange={(e: any) => {
-                const value = e.target.value;
-                if (value.length > 10) return;
-                setPhone(value);
-              }}
-              required
-              disabled={isOtpSent || isLoading}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">+91</InputAdornment>,
-              }}
-            />
-          </div>
-          {isOtpSent && (
+          <form onSubmit={isOtpSent ? verifyOtp : getOtp}>
             <div className={styles.inputField}>
               <TextField
-                type="number"
-                label="OTP"
-                placeholder="Enter OTP"
-                value={otp}
+                type="text"
+                label="Phone Number"
+                placeholder="9876543210"
+                value={phone}
                 fullWidth
-                onChange={(e: any) => setOtp(e.target.value)}
+                onChange={(e: any) => {
+                  const value = e.target.value;
+                  if (value.length > 10) return;
+                  setPhone(value);
+                }}
                 required
+                disabled={isOtpSent || isLoading}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">+91</InputAdornment>,
+                }}
               />
             </div>
-          )}
-          <div className={styles.inputField}>
-            {isOtpSent ? (
-              <Button
-                variant="contained"
-                className={styles.submitBtn}
-                onClick={verifyOtp}
-                disabled={isLoading}>
-                {isLoading ? <Loader size={20} /> : "Verify"}
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                className={styles.submitBtn}
-                onClick={getOtp}
-                disabled={isLoading}>
-                {isLoading ? <Loader size={20} /> : "Login"}
-              </Button>
+            {isOtpSent && (
+              <div className={styles.inputField}>
+                <TextField
+                  type="number"
+                  label="OTP"
+                  placeholder="Enter OTP"
+                  value={otp}
+                  fullWidth
+                  onChange={(e: any) => setOtp(e.target.value)}
+                  required
+                />
+              </div>
             )}
-          </div>
+            <div className={styles.inputField}>
+              {isOtpSent ? (
+                <Button
+                  variant="contained"
+                  type="submit"
+                  className={styles.submitBtn}
+                  //onClick={verifyOtp}
+                  disabled={isLoading}>
+                  {isLoading ? <Loader size={20} /> : "Verify"}
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  type="submit"
+                  className={styles.submitBtn}
+                  //onClick={getOtp}
+                  disabled={isLoading}>
+                  {isLoading ? <Loader size={20} /> : "Login"}
+                </Button>
+              )}
+            </div>
+          </form>
         </Card>
         {errMsg && (
           <Typography color="error" className={styles.errorMessage}>

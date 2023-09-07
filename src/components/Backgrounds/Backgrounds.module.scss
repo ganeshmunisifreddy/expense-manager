@@ -1,5 +1,14 @@
+.root {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
 .background {
-  height: 25vh;
+  height: 30vh;
   width: 100%;
   position: absolute;
   top: 0;

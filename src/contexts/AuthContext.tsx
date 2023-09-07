@@ -11,7 +11,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }: any) => {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const logout = async () => {
     setCurrentUser(null);
@@ -20,6 +20,7 @@ export const AuthContextProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setCurrentUser(user);
@@ -27,8 +28,8 @@ export const AuthContextProvider = ({ children }: any) => {
       } else {
         setCurrentUser(null);
       }
+      setLoading(false);
     });
-    setLoading(false);
 
     return () => unsubscribe();
   }, []);

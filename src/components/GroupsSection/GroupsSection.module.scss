@@ -68,6 +68,11 @@
 
   .removeBtn {
     margin-left: auto;
+
+    svg {
+      color: red !important;
+    }
+
   }
 }
 
@@ -85,6 +90,6 @@
 
 @media (prefers-color-scheme: dark) {
   .groupCard {
-    background-color: #303030;
+    background-color: #2b2d42;
   }
 }

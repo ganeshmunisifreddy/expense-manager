@@ -199,7 +199,7 @@ const Groups: NextPage = () => {
               handleSelectedGroup={handleSelectedGroup}
               handleDelete={handleDelete}
             />
-            {selectedGroup && (
+            {selectedGroup && groups.length > 0 && (
               <Card className={styles.statsCard}>
                 {stats.userStats &&
                   Object.values(stats.userStats).map((user: any) => (

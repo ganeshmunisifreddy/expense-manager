@@ -180,7 +180,7 @@ const AddGroup = (props: any) => {
                 <div className={styles.users}>
                   {Object.values(newGroup.users).map((user: any) => (
                     <Card className={styles.user} key={user.id}>
-                      <Avatar sx={{ width: 32, height: 32 }}>
+                      <Avatar sx={{ width: 36, height: 36, bgcolor: "#7635dc", fontSize: 16 }}>
                         {stringAvatar(user.displayName)}
                       </Avatar>
                       <div className={styles.userInfo}>
@@ -193,7 +193,7 @@ const AddGroup = (props: any) => {
                         <IconButton
                           className={styles.removeBtn}
                           onClick={() => deleteUser(user.id)}>
-                          <Iconify icon="mdi:close" height={16} color="#ff0000" />
+                          <Iconify icon="mdi:close" height={16} />
                         </IconButton>
                       )}
                     </Card>

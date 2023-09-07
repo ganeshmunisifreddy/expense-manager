@@ -79,7 +79,7 @@ const GroupsSection = (props: any) => {
             ))}
           </div>
         ) : (
-          <Typography variant="body1" align="center">
+          <Typography variant="body1" align="center" sx={{ mt: 4 }}>
             No Groups
           </Typography>
         )}

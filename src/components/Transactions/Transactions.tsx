@@ -8,9 +8,11 @@ import AddTransaction from "./AddTransaction";
 import { db } from "../../firebase/config";
 import Loader from "../Loader";
 import Iconify from "../Iconify";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Transactions = (props: any) => {
   const { data = [], getTransactions, selectedGroup } = props;
+  const { user }: any = useAuth();
 
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -111,7 +113,7 @@ const Transactions = (props: any) => {
                   <div style={{ flex: 1, textAlign: "right", cursor: "pointer" }}>
                     <IconButton
                       onClick={(e: any) => handleClick(e, txn.id)}
-                      disabled
+                      disabled={txn.createdBy !== user?.uid}
                       style={{ marginLeft: 8 }}>
                       <Iconify icon="mdi:dots-vertical" />
                     </IconButton>

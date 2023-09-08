@@ -85,29 +85,33 @@ const Transactions = (props: any) => {
                     <Typography className={styles.date}>
                       {formatDateText(txn.date, txn.time)}
                     </Typography>
+                    {txn.groupName && !selectedGroup && (
+                      <Typography className={styles.groupName}>{txn.groupName}</Typography>
+                    )}
                   </div>
                   <div style={{ flex: 3 }} className="text-right">
                     <Typography color="primary">{ConvertToCurrency(txn.amount)}</Typography>
                     {selectedGroup && (
-                      <Typography className={styles.account}>
-                        <Iconify
-                          icon="mingcute:user-3-fill"
-                          width={14}
-                          sx={{ marginRight: "4px" }}
-                        />
-                        {txnUser}
-                      </Typography>
+                      <div className={styles.account}>
+                        <Typography className={styles.accountLabel}>
+                          <Iconify icon="fa-solid:user" width={10} sx={{ mr: 0.5 }} />
+                          {txnUser}
+                        </Typography>
+                      </div>
                     )}
                     {txn.account && !selectedGroup && (
-                      <Typography className={styles.account}>
-                        <Iconify icon="solar:wallet-bold" width={16} sx={{ marginRight: "4px" }} />
-                        {txn.account}
-                      </Typography>
+                      <div className={styles.account}>
+                        <Typography className={styles.accountLabel}>
+                          <Iconify icon="ion:card" width={14} sx={{ mr: 0.5 }} />
+                          {txn.account}
+                        </Typography>
+                      </div>
                     )}
                   </div>
                   <div style={{ flex: 1, textAlign: "right", cursor: "pointer" }}>
                     <IconButton
                       onClick={(e: any) => handleClick(e, txn.id)}
+                      disabled
                       style={{ marginLeft: 8 }}>
                       <Iconify icon="mdi:dots-vertical" />
                     </IconButton>

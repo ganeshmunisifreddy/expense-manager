@@ -30,7 +30,19 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  font-size: 12px;
+}
+
+.accountLabel {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  background: #7535dc;
+  width: fit-content;
+  padding: 2px 6px;
+  margin-top: 2px;
+  border-radius: 4px;
 }
 
 .accountIcon {
@@ -58,6 +70,18 @@
   position: fixed;
   bottom: 80px;
   right: 16px;
+}
+
+.groupName {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: bold;
+  margin-top: 8px;
+  background: #e77a85;
+  width: fit-content;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 @media screen and (max-width: 375px) {

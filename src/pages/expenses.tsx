@@ -48,6 +48,7 @@ const MyExpenses: NextPage = () => {
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setShowGroupTxns(event.target.checked);
+    localStorage.setItem("showGroupTxns", JSON.stringify(event.target.checked));
   };
 
   const getTransactions = useCallback(async () => {
@@ -78,6 +79,13 @@ const MyExpenses: NextPage = () => {
       getTransactions();
     }
   }, [userId, router, getTransactions]);
+
+  useEffect(() => {
+    const value = localStorage.getItem("showGroupTxns");
+    if (value) {
+      setShowGroupTxns(JSON.parse(value));
+    }
+  }, []);
 
   //if (!userId) return null;
 

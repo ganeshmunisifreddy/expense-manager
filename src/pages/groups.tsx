@@ -71,10 +71,11 @@ const Groups: NextPage = () => {
       setGroups(groupsData);
       if (groupsData.length) {
         setSelectedGroup(groupsData[0]);
+      } else {
+        setIsLoading(false);
       }
     } catch (e: any) {
       console.error(e);
-    } finally {
       setIsLoading(false);
     }
   }, [uid]);

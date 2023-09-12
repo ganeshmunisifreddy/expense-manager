@@ -13,7 +13,7 @@ import { collection, addDoc, doc, updateDoc, serverTimestamp } from "firebase/fi
 import styles from "./Transactions.module.scss";
 import { db } from "../../firebase/config";
 import { format } from "date-fns";
-import { deleteKeys } from "../../utils/common";
+import { deleteKeys, trimSpaces } from "../../utils/common";
 import { useAuth } from "../../contexts/AuthContext";
 
 const FIELDS = [
@@ -39,7 +39,7 @@ const FIELDS = [
     placeholder: "Enter Account",
     name: "account",
     fullWidth: true,
-    required: false,
+    required: true,
   },
   {
     label: "Date",
@@ -115,6 +115,7 @@ const AddTransaction = (props: any) => {
 
   const handleSave = async (e: any) => {
     e.preventDefault();
+    const txn = trimSpaces(newTransaction);
     toggleLoading(true);
     try {
       if (transactionId) {
@@ -123,16 +124,16 @@ const AddTransaction = (props: any) => {
         if (txnIdx > -1) {
           const docRef = doc(db, "expenses", transactionId);
           let updatedTxn = {
-            ...newTransaction,
+            ...txn,
             updatedAt: serverTimestamp(),
           };
-          updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt", "updatedAt"]);
+          updatedTxn = deleteKeys(updatedTxn, ["id", "createdAt"]);
           await updateDoc(docRef, updatedTxn);
           resetTransaction();
         }
       } else {
         const newTxn = {
-          ...newTransaction,
+          ...txn,
           createdBy: user?.uid || "",
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),

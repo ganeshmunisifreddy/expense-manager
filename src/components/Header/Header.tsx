@@ -44,11 +44,8 @@ const Header = () => {
               component={Link}
               href={item.link}
               className={styles.menuButton}
-              // startIcon={
-              //   active ? <Iconify icon={item.iconOutline} /> : <Iconify icon={item.icon} />
-              // }
+              startIcon={<Iconify icon={active ? item.iconOutline : item.icon} />}
               variant={active ? "contained" : "text"}>
-              <Iconify icon={active ? item.iconOutline : item.icon} />
               <span className={styles.menuLabelDesktop}>{item.name}</span>
               <span className={styles.menuLabelMobile}>{active ? item.name : ""}</span>
             </Button>

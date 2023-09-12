@@ -51,3 +51,12 @@ export const formatDateText = (date: string, time: string) => {
   }
   return `${format(new Date(date), "dd MMM")}, ${convertTimeToMeridiem(time)}`;
 };
+
+export const trimSpaces = (obj: Record<string, any>) => {
+  const newObj: Record<string, any> = {};
+
+  for (const key in obj) {
+    newObj[key] = typeof obj[key] === "string" ? obj[key].trim() : obj[key];
+  }
+  return newObj;
+};

@@ -54,7 +54,7 @@ const GroupsSection = (props: any) => {
           <Typography variant="h6">Groups</Typography>
           <Button
             variant="contained"
-            startIcon={<Iconify icon="icon-park-outline:add" width={20} />}
+            startIcon={<Iconify icon="icon-park-outline:add-one" width={20} />}
             onClick={openModal}>
             Add Group
           </Button>

@@ -1,12 +1,13 @@
 @import '../../styles/variables.scss';
 
 .header {
-  background-color: #161c24;
+  //background-color: #161c24;
+  background: rgba(16 18 27 / 75%);
+  backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 8px 24px;
-  box-shadow: 0 0 16px #ccc;
   position: fixed;
   width: 100%;
   z-index: 1;
@@ -51,7 +52,7 @@
 
 @media (prefers-color-scheme: dark) {
   .header {
-    background: #161c24;
+    //background: #161c24;
     color: #f5f7f9;
     box-shadow: none;
     border-top: 1px solid #919eab33;
@@ -61,16 +62,19 @@
   @media screen and (min-width: 768px) {
     .header {
       border-top: none;
-      border-right: 1px dashed #919eab33;
+      border-right: 1px dashed rgb(145 158 171 / 60%);
     }
   }
 }
 
 @media screen and (min-width: 768px) {
   .header {
+    background: none;
+    backdrop-filter: none;
     width: 240px;
-    height: 100vh;
+    height: 100%;
     padding: 24px;
+    border-right: 1px dashed rgb(0 0 0 / 60%);
   }
 
   .logo {

@@ -3,11 +3,18 @@
   background: rgb(255 255 255 / 50%);
   top: 0;
   left: 0;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   z-index: 999999;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(24px);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .overlay {
+    background-color: #000000bf;
+  }
 }

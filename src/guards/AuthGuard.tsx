@@ -14,7 +14,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     }
   }, [router, user]);
 
-  return <div>{user ? children : <Loader fullScreen />}</div>;
+  return <>{user ? children : <Loader fullScreen />}</>;
 };
 
 export default AuthGuard;

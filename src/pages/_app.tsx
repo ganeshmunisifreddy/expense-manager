@@ -24,7 +24,6 @@ function MyApp(props: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        {/* <meta name="viewport" content="initial-scale=1, width=device-width" /> */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
       <AuthContextProvider>
@@ -32,7 +31,9 @@ function MyApp(props: MyAppProps) {
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline enableColorScheme />
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Component {...pageProps} />
+            <div className="app">
+              <Component {...pageProps} />
+            </div>
           </LocalizationProvider>
         </ThemeProvider>
       </AuthContextProvider>

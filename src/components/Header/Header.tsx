@@ -4,8 +4,7 @@ import styles from "./Header.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Iconify from "../Iconify";
-import Image from "next/image";
-import logo from "../../../assets/logo.png";
+import Logo from "../Logo";
 
 const LINKS = [
   {
@@ -34,7 +33,9 @@ const Header = () => {
 
   return (
     <div className={styles.header}>
-      <Image src={logo} className={styles.logo} alt="Expense Manager" />
+      <div className={styles.logoContainer}>
+        <Logo />
+      </div>
       <Box className={styles.menu}>
         {LINKS.map((item, index) => {
           const active = isActivePath(item.link);

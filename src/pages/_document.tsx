@@ -1,7 +1,6 @@
 import * as React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
-import theme from "../mui/theme";
 import createEmotionCache from "../mui/createEmotionCache";
 
 export default class MyDocument extends Document {
@@ -14,7 +13,11 @@ export default class MyDocument extends Document {
           <link rel="apple-touch-icon" href="/icon.png"></link>
           {/* PWA primary color */}
 
-          <meta name="theme-color" content={theme.palette.primary.main} />
+          <meta name="theme-color" content="#1e1d49" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="black-transcluent" />
+
           <link rel="shortcut icon" href="/static/favicon.ico" />
           <link
             rel="stylesheet"

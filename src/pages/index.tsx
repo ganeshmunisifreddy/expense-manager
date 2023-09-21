@@ -8,8 +8,8 @@ import Loader from "../components/Loader/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
 import styles from "../styles/Login.module.scss";
-import Backgrounds from "../components/Backgrounds";
 import Head from "next/head";
+import Logo from "../components/Logo";
 
 declare global {
   interface Window {
@@ -106,7 +106,9 @@ const Login = () => {
       <Head>
         <title>Login - Expense Manager</title>
       </Head>
-      <Backgrounds text="Welcome" />
+      <div className={styles.logoContainer}>
+        <Logo />
+      </div>
       <div className={styles.container}>
         <Card className={styles.loginCard}>
           <Typography variant="h6" className={styles.title}>

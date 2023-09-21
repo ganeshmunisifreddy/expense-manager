@@ -5,6 +5,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 64px;
+  width: 240px;
 }
 
 .container {

@@ -28,7 +28,7 @@ const MyExpenses: NextPage = () => {
 
   const router = useRouter();
 
-  const { user }: any = useAuth();
+  const { user, isUserLoading }: any = useAuth();
   const userId: string = user?.uid || "";
 
   const filteredTransactions = transactions.filter((txn: any) => {
@@ -87,8 +87,6 @@ const MyExpenses: NextPage = () => {
     }
   }, []);
 
-  //if (!userId) return null;
-
   return (
     <AuthGuard>
       <PrivateLayout>
@@ -135,7 +133,9 @@ const MyExpenses: NextPage = () => {
               <Typography>Group Expenses</Typography>
               <Switch checked={showGroupTxns} onChange={handleToggle} />
             </Stack>
-            <Transactions data={filteredTransactions} getTransactions={getTransactions} />
+            {!isUserLoading && (
+              <Transactions data={filteredTransactions} getTransactions={getTransactions} />
+            )}
           </main>
         </Container>
       </PrivateLayout>

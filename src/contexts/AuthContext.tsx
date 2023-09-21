@@ -1,48 +1,63 @@
-import React, { useEffect, useState, useContext, createContext } from "react";
+import React, { useEffect, useState, useContext, createContext, useCallback } from "react";
 import Loader from "../components/Loader";
 import { auth } from "../firebase/config";
 import { signOut } from "firebase/auth";
 
 const AuthContext = createContext({
   user: null,
+  isUserLoading: true,
 });
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthContextProvider = ({ children }: any) => {
+export const useFirebaseAuth = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isUserLoading, setIsUserLoading] = useState<boolean>(true);
 
-  const logout = async () => {
+  const clear = () => {
     setCurrentUser(null);
-    localStorage.removeItem("isAuthenticated");
-    await signOut(auth);
+    setIsUserLoading(false);
   };
 
-  useEffect(() => {
-    setLoading(true);
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setCurrentUser(user);
-        localStorage.setItem("isAuthenticated", "true");
-      } else {
-        setCurrentUser(null);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+  const authStateChanged = useCallback(async (user: any) => {
+    setIsUserLoading(true);
+    if (!user) {
+      clear();
+      return;
+    }
+    setCurrentUser(user);
+    setIsUserLoading(false);
   }, []);
 
+  const logout = () =>
+    signOut(auth).then(() => {
+      clear();
+    });
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(authStateChanged);
+    return () => unsubscribe();
+  }, [authStateChanged]);
+
+  return {
+    currentUser,
+    isUserLoading,
+    logout,
+  };
+};
+
+export const AuthContextProvider = ({ children }: any) => {
+  const { currentUser: user, isUserLoading, logout } = useFirebaseAuth();
+
   const value = {
-    user: currentUser,
-    loading,
+    user,
+    isUserLoading,
     logout,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <Loader fullScreen /> : children}
+      {isUserLoading ? <Loader fullScreen /> : children}
     </AuthContext.Provider>
   );
 };

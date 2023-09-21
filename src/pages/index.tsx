@@ -29,7 +29,7 @@ const Login = () => {
 
   const router = useRouter();
 
-  const { user } = useAuth();
+  const { user, isUserLoading } = useAuth();
 
   const generateRecaptcha = async () => {
     if (window.recaptchaVerifier) {
@@ -82,7 +82,6 @@ const Login = () => {
       .confirm(otp)
       .then(() => {
         setIsLoading(false);
-        //const user = result.user;
         router.replace("/expenses");
       })
       .catch((e: any) => {
@@ -93,10 +92,14 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (!isUserLoading && user) {
       router.replace("/expenses");
     }
-  }, [user, router]);
+  }, [user, router, isUserLoading]);
+
+  if (isUserLoading || (!isUserLoading && !!user)) {
+    return <Loader fullScreen />;
+  }
 
   return (
     <div className={styles.root}>
@@ -148,7 +151,6 @@ const Login = () => {
                   variant="contained"
                   type="submit"
                   className={styles.submitBtn}
-                  //onClick={verifyOtp}
                   disabled={isLoading}>
                   {isLoading ? <Loader size={20} /> : "Verify"}
                 </Button>
@@ -157,7 +159,6 @@ const Login = () => {
                   variant="contained"
                   type="submit"
                   className={styles.submitBtn}
-                  //onClick={getOtp}
                   disabled={isLoading}>
                   {isLoading ? <Loader size={20} /> : "Login"}
                 </Button>

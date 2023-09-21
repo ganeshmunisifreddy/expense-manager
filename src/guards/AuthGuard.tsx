@@ -5,16 +5,15 @@ import Loader from "../components/Loader/Loader";
 
 const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isUserLoading } = useAuth();
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    if (!isAuthenticated) {
+    if (!isUserLoading && !user) {
       router.push("/");
     }
-  }, [router, user]);
+  }, [router, user, isUserLoading]);
 
-  return <>{user ? children : <Loader fullScreen />}</>;
+  return <>{!user ? <Loader fullScreen /> : children}</>;
 };
 
 export default AuthGuard;

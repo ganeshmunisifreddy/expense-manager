@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Typography,
   TextField,
+  Slide,
+  AppBar,
+  Toolbar,
+  IconButton,
 } from "@mui/material";
 import { collection, addDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import styles from "./Transactions.module.scss";
@@ -15,6 +16,8 @@ import { db } from "../../firebase/config";
 import { format } from "date-fns";
 import { deleteKeys, trimSpaces } from "../../utils/common";
 import { useAuth } from "../../contexts/AuthContext";
+import { TransitionProps } from "@mui/material/transitions";
+import Iconify from "../Iconify";
 
 const FIELDS = [
   {
@@ -59,6 +62,15 @@ const FIELDS = [
   },
 ];
 
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const AddTransaction = (props: any) => {
   const {
     transactions,
@@ -99,8 +111,7 @@ const AddTransaction = (props: any) => {
     setNewTransaction(obj);
   };
 
-  const resetTransaction = () => {
-    handleEditMode("");
+  const clear = () => {
     setNewTransaction({
       amount: "",
       description: "",
@@ -108,8 +119,13 @@ const AddTransaction = (props: any) => {
       date: format(new Date(), "yyyy-MM-dd"),
       time: format(new Date(), "HH:mm"),
     });
-    toggleLoading(false);
     onClose();
+  };
+
+  const resetTransaction = () => {
+    clear();
+    handleEditMode("");
+    toggleLoading(false);
     getTransactions();
   };
 
@@ -153,12 +169,23 @@ const AddTransaction = (props: any) => {
     <Dialog
       open={open}
       //onClose={onClose}
-    >
+      TransitionComponent={Transition}
+      fullScreen>
       <form onSubmit={handleSave} className={styles.form}>
-        <DialogTitle align="center">
-          <Typography>{transactionId ? "Edit Expense" : "Add Expense"}</Typography>
-        </DialogTitle>
-        <DialogContent>
+        <AppBar sx={{ position: "relative", borderRadius: 0 }}>
+          <Toolbar>
+            <IconButton onClick={clear} sx={{ color: "#fff" }}>
+              <Iconify icon="ep:close-bold" />
+            </IconButton>
+            <Typography variant="h6" sx={{ flex: 1 }} align="center" component="div">
+              {transactionId ? "Edit Expense" : "Add Expense"}
+            </Typography>
+            <Button variant="contained" type="submit">
+              {newTransaction.id ? "Update" : "Save"}
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <div className={styles.formContainer}>
           <div className={styles.formFields}>
             {FIELDS.map((field: any, index: number) => {
               return (
@@ -174,20 +201,13 @@ const AddTransaction = (props: any) => {
                     fullWidth={field.fullWidth}
                     required={field.required}
                     autoComplete="off"
+                    variant="standard"
                   />
                 </div>
               );
             })}
           </div>
-        </DialogContent>
-        <DialogActions>
-          <Button color="error" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button variant="contained" type="submit">
-            {newTransaction.id ? "Update" : "Save"}
-          </Button>
-        </DialogActions>
+        </div>
       </form>
     </Dialog>
   );

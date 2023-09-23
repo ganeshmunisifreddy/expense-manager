@@ -24,6 +24,7 @@ const Transactions = (props: any) => {
 
   const closeModal = () => {
     setIsOpen(false);
+    setTransactionId("");
   };
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -138,18 +139,16 @@ const Transactions = (props: any) => {
           )}
         </div>
 
-        {isOpen && (
-          <AddTransaction
-            transactions={data}
-            getTransactions={getTransactions}
-            transactionId={transactionId}
-            toggleLoading={toggleLoading}
-            handleEditMode={handleEditMode}
-            open={isOpen}
-            onClose={closeModal}
-            selectedGroup={selectedGroup}
-          />
-        )}
+        <AddTransaction
+          transactions={data}
+          getTransactions={getTransactions}
+          transactionId={transactionId}
+          toggleLoading={toggleLoading}
+          handleEditMode={handleEditMode}
+          open={isOpen}
+          onClose={closeModal}
+          selectedGroup={selectedGroup}
+        />
       </div>
     </>
   );

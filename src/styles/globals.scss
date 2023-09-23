@@ -133,6 +133,16 @@ input[type=number] {
     border-color: #f5f7f9 !important;
   }
 
+  .MuiInputBase-root {
+    &:before {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    &:hover:not(.Mui-disabled, .Mui-error):before {
+      border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+    }
+  }
+
   .MuiPaper-root {
     background-color: #2b2d42;
   }

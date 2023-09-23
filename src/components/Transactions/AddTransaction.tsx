@@ -9,6 +9,10 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { collection, addDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import styles from "./Transactions.module.scss";
@@ -38,9 +42,9 @@ const FIELDS = [
   },
   {
     label: "Account",
-    type: "text",
+    type: "select",
     placeholder: "Enter Account",
-    name: "account",
+    name: "accountId",
     fullWidth: true,
     required: true,
   },
@@ -77,18 +81,17 @@ const AddTransaction = (props: any) => {
     getTransactions,
     transactionId = "",
     toggleLoading,
-    handleEditMode,
     open,
     onClose,
     selectedGroup,
   } = props;
 
-  const { user }: any = useAuth();
+  const { user, accounts }: any = useAuth();
 
   const [newTransaction, setNewTransaction] = useState<any>({
     amount: "",
     description: "",
-    account: "",
+    accountId: "",
     date: format(new Date(), "yyyy-MM-dd"),
     time: format(new Date(), "HH:mm"),
   });
@@ -112,19 +115,18 @@ const AddTransaction = (props: any) => {
   };
 
   const clear = () => {
+    onClose();
     setNewTransaction({
       amount: "",
       description: "",
-      account: "",
+      accountId: "",
       date: format(new Date(), "yyyy-MM-dd"),
       time: format(new Date(), "HH:mm"),
     });
-    onClose();
   };
 
   const resetTransaction = () => {
     clear();
-    handleEditMode("");
     toggleLoading(false);
     getTransactions();
   };
@@ -188,6 +190,30 @@ const AddTransaction = (props: any) => {
         <div className={styles.formContainer}>
           <div className={styles.formFields}>
             {FIELDS.map((field: any, index: number) => {
+              if (field.type === "select") {
+                return (
+                  <FormControl
+                    variant="standard"
+                    className={styles.field}
+                    required={field.required}
+                    key={field.label + "-" + index}>
+                    <InputLabel>{field.label}</InputLabel>
+                    <Select
+                      value={newTransaction[field.name]}
+                      name={field.name}
+                      onChange={handleChange}>
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      {Object.keys(accounts).map((key) => (
+                        <MenuItem key={key} value={key}>
+                          {accounts[key].name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                );
+              }
               return (
                 <div className={styles.field} key={field.label + "-" + index}>
                   <TextField

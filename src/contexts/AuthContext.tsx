@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useContext, createContext, useCallback } from "react";
 import Loader from "../components/Loader";
-import { auth } from "../firebase/config";
+import { auth, db } from "../firebase/config";
 import { signOut } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
 
 const AuthContext = createContext({
   user: null,
   isUserLoading: true,
+  accounts: {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -13,6 +15,7 @@ export const useAuth = () => useContext(AuthContext);
 export const useFirebaseAuth = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isUserLoading, setIsUserLoading] = useState<boolean>(true);
+  const [accounts, setAccounts] = useState<any>({});
 
   const clear = () => {
     setCurrentUser(null);
@@ -25,6 +28,9 @@ export const useFirebaseAuth = () => {
       clear();
       return;
     }
+    const userRef = doc(db, "users", user.uid);
+    const userData = await getDoc(userRef);
+    setAccounts(userData.data()?.accounts || {});
     setCurrentUser(user);
     setIsUserLoading(false);
   }, []);
@@ -41,16 +47,18 @@ export const useFirebaseAuth = () => {
 
   return {
     currentUser,
+    accounts,
     isUserLoading,
     logout,
   };
 };
 
 export const AuthContextProvider = ({ children }: any) => {
-  const { currentUser: user, isUserLoading, logout } = useFirebaseAuth();
+  const { currentUser: user, accounts, isUserLoading, logout } = useFirebaseAuth();
 
   const value = {
     user,
+    accounts,
     isUserLoading,
     logout,
   };

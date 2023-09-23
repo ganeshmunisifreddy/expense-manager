@@ -12,7 +12,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const Transactions = (props: any) => {
   const { data = [], getTransactions, selectedGroup } = props;
-  const { user }: any = useAuth();
+  const { user, accounts }: any = useAuth();
 
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -106,7 +106,7 @@ const Transactions = (props: any) => {
                       <div className={styles.account}>
                         <Typography className={styles.accountLabel}>
                           <Iconify icon="ion:card" width={14} sx={{ mr: 0.5 }} />
-                          {txn.account}
+                          {accounts[txn.accountId]?.name}
                         </Typography>
                       </div>
                     )}
@@ -144,7 +144,6 @@ const Transactions = (props: any) => {
           getTransactions={getTransactions}
           transactionId={transactionId}
           toggleLoading={toggleLoading}
-          handleEditMode={handleEditMode}
           open={isOpen}
           onClose={closeModal}
           selectedGroup={selectedGroup}

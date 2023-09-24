@@ -88,9 +88,8 @@ const GroupsSection = (props: any) => {
         <MenuItem onClick={() => handleAction("view")}>View</MenuItem>
         <MenuItem onClick={() => handleAction("delete")}>Delete</MenuItem>
       </Menu>
-      {isOpen && (
-        <AddGroup activeGroup={activeGroup} onSave={onSave} open={isOpen} onClose={closeModal} />
-      )}
+
+      <AddGroup activeGroup={activeGroup} onSave={onSave} open={isOpen} onClose={closeModal} />
     </>
   );
 };

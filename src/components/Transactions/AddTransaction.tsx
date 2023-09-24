@@ -5,7 +5,6 @@ import {
   Dialog,
   Typography,
   TextField,
-  Slide,
   AppBar,
   Toolbar,
   IconButton,
@@ -20,8 +19,8 @@ import { db } from "../../firebase/config";
 import { format } from "date-fns";
 import { deleteKeys, trimSpaces } from "../../utils/common";
 import { useAuth } from "../../contexts/AuthContext";
-import { TransitionProps } from "@mui/material/transitions";
 import Iconify from "../Iconify";
+import Transition from "../Trasition";
 
 const FIELDS = [
   {
@@ -65,15 +64,6 @@ const FIELDS = [
     required: true,
   },
 ];
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const AddTransaction = (props: any) => {
   const {

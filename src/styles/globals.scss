@@ -85,6 +85,24 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.sticky {
+  position: sticky;
+  top: 0;
+}
+
+.MuiList-root {
+  max-height: 320px;
+}
+
+.MuiDialog-container {
+  position: absolute;
+  bottom: 0;
+  height: 80%;
+  width: 100%;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
 @media screen and (min-width: 768px) {
   .app {
     margin: 16px;
@@ -93,9 +111,10 @@ input[type=number] {
     height: calc(100dvh - 32px);
   }
 
-  .sticky {
-    position: sticky;
-    top: 0;
+  .MuiDialog-container {
+    height: 80%;
+    width: 80%;
+    margin-left: 10%;
   }
 }
 
@@ -159,5 +178,18 @@ input[type=number] {
 
   .MuiMenu-paper {
     background-color: #0f0123;
+  }
+
+  .MuiAppBar-root {
+    background-color: #000000;
+  }
+
+  .MuiDialog-paper {
+    background: rgba(17, 17, 17, 95%);
+
+    .MuiInputBase-input:disabled {
+      color: rgb(255 255 255 / 60%) !important;
+      -webkit-text-fill-color: rgb(255 255 255 / 60%);
+    }
   }
 }

@@ -13,6 +13,7 @@ import { setDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { stringAvatar } from "../utils/common";
 import AuthGuard from "../guards/AuthGuard";
+import Head from "next/head";
 
 const Profile: NextPage = () => {
   const [name, setName] = useState<string>("");
@@ -70,6 +71,9 @@ const Profile: NextPage = () => {
   return (
     <AuthGuard>
       <PrivateLayout>
+        <Head>
+          <title>Profile | Expense Manager</title>
+        </Head>
         <div className={styles.root}>
           <Card className={styles.profileCard}>
             <Avatar sx={{ width: 72, height: 72, background: "#7635dc" }}>

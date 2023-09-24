@@ -54,17 +54,16 @@ const Transactions = (props: any) => {
 
   const handleDelete = async (id: string) => {
     const isConfirm = confirm("Are you sure, you want to delete?");
-    if (isConfirm) {
-      setIsLoading(true);
-      try {
-        const docRef = doc(db, "expenses", id);
-        await deleteDoc(docRef);
-        setIsLoading(false);
-        getTransactions();
-      } catch (e: any) {
-        console.error(e.message);
-        setIsLoading(false);
-      }
+    if (!isConfirm) return;
+    setIsLoading(true);
+    try {
+      const docRef = doc(db, "expenses", id);
+      await deleteDoc(docRef);
+      setIsLoading(false);
+      getTransactions();
+    } catch (e: any) {
+      console.error(e.message);
+      setIsLoading(false);
     }
   };
 

@@ -48,19 +48,21 @@ export const useFirebaseAuth = () => {
   return {
     currentUser,
     accounts,
+    updateAccounts: setAccounts,
     isUserLoading,
     logout,
   };
 };
 
 export const AuthContextProvider = ({ children }: any) => {
-  const { currentUser: user, accounts, isUserLoading, logout } = useFirebaseAuth();
+  const { currentUser: user, accounts, updateAccounts, isUserLoading, logout } = useFirebaseAuth();
 
   const value = {
     user,
     accounts,
     isUserLoading,
     logout,
+    updateAccounts,
   };
 
   return (

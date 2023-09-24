@@ -3,15 +3,15 @@ import { useState } from "react";
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
   Typography,
   TextField,
   InputAdornment,
   IconButton,
   Card,
   Avatar,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import styles from "./GroupsSection.module.scss";
@@ -20,6 +20,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import Loader from "../Loader";
 import { stringAvatar } from "../../utils/common";
 import Iconify from "../Iconify";
+import Transition from "../Trasition";
 
 const initialGroup = Object.freeze({
   name: "",
@@ -120,11 +121,21 @@ const AddGroup = (props: any) => {
   }, [activeGroup]);
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} TransitionComponent={Transition} fullScreen>
       <form onSubmit={onSubmit}>
-        <DialogTitle align="center">
-          <Typography>{activeGroupId ? "View" : "Add"} Group</Typography>
-        </DialogTitle>
+        <AppBar sx={{ position: "relative", borderRadius: 0 }}>
+          <Toolbar>
+            <IconButton onClick={handleClose} sx={{ color: "#fff" }}>
+              <Iconify icon="ep:close-bold" />
+            </IconButton>
+            <Typography variant="h6" sx={{ flex: 1 }} align="center" component="div">
+              Add Group
+            </Typography>
+            <Button variant="contained" type="submit">
+              Save
+            </Button>
+          </Toolbar>
+        </AppBar>
         <DialogContent>
           <div className={styles.formFields}>
             <div className={styles.field}>
@@ -203,16 +214,6 @@ const AddGroup = (props: any) => {
             )}
           </div>
         </DialogContent>
-        <DialogActions>
-          <Button color="error" onClick={handleClose}>
-            {activeGroupId ? "Close" : "Cancel"}
-          </Button>
-          {!activeGroupId && (
-            <Button variant="contained" type="submit">
-              {newGroup.id ? "Update" : "Save"}
-            </Button>
-          )}
-        </DialogActions>
       </form>
     </Dialog>
   );

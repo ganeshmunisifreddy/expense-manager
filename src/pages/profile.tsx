@@ -72,7 +72,7 @@ const Profile: NextPage = () => {
     <AuthGuard>
       <PrivateLayout>
         <Head>
-          <title>Profile | Expense Manager</title>
+          <title>Profile | Xpense Tracker</title>
         </Head>
         <div className={styles.root}>
           <Card className={styles.profileCard}>

@@ -14,6 +14,14 @@ import Head from "next/head";
 import AddAccount from "../components/Accounts/AddAccount";
 import Iconify from "../components/Iconify";
 
+const accountIcons: any = {
+  Bank: "ph:bank-fill",
+  UPI: "solar:double-alt-arrow-right-bold",
+  Credit: "solar:card-bold",
+  Wallet: "solar:wallet-bold",
+  Cash: "heroicons-outline:cash",
+};
+
 const Accounts: NextPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -65,11 +73,24 @@ const Accounts: NextPage = () => {
   //   if (!isConfirm) return;
   // };
 
+  const accountsMap: any = Object.keys(accounts).reduce((acc, key) => {
+    const acMap: any = { ...acc };
+    const accountType = accounts[key].type;
+    if (accountType) {
+      if (!acMap[accountType]) acMap[accountType] = [];
+      acMap[accountType].push({ ...accounts[key], id: key });
+    } else {
+      if (!acMap["Others"]) acMap["Others"] = [];
+      acMap["Others"].push({ ...accounts[key], id: key });
+    }
+    return acMap;
+  }, {});
+
   return (
     <AuthGuard>
       <PrivateLayout>
         <Head>
-          <title>Accounts | Expense Manager</title>
+          <title>Accounts | Xpense Tracker</title>
         </Head>
         {isLoading && <Loader fullScreen />}
         <div className={styles.root}>
@@ -80,23 +101,41 @@ const Accounts: NextPage = () => {
             </Button>
           </div>
           <div className={styles.container}>
-            {Object.keys(accounts)
-              .sort((a, b) => {
-                if (accounts[b].name < accounts[a].name) {
-                  return 1;
-                } else {
-                  return -1;
-                }
-              })
-              .map((key) => {
+            {Object.keys(accountsMap)
+              .sort()
+              .map((accountKey: string) => {
                 return (
-                  <Card key={key} className={styles.accountCard} onClick={() => handleSelect(key)}>
-                    <Typography sx={{ fontWeight: "bold" }}>{accounts[key].name}</Typography>
-                    <IconButton>
-                      {/* <Iconify icon="solar:trash-bin-minimalistic-bold" /> */}
-                      <Iconify icon="solar:pen-2-bold" />
-                    </IconButton>
-                  </Card>
+                  <div key={accountKey}>
+                    <Typography variant="h6" sx={{ textTransform: "capitalize", mb: 1 }}>
+                      {accountKey}
+                    </Typography>
+                    {accountsMap[accountKey]
+                      .sort((a: any, b: any) => {
+                        if (b.name < a.name) {
+                          return 1;
+                        } else if (b.name > a.name) {
+                          return -1;
+                        } else {
+                          return 0;
+                        }
+                      })
+                      .map((ac: any, index: number) => (
+                        <Card
+                          key={ac.name + index}
+                          className={styles.accountCard}
+                          onClick={() => handleSelect(ac.id)}>
+                          <Typography className={styles.accountName}>
+                            {ac.type && (
+                              <Iconify icon={accountIcons[ac.type]} style={{ marginRight: 8 }} />
+                            )}
+                            <span>{ac.name}</span>
+                          </Typography>
+                          <IconButton>
+                            <Iconify icon="solar:pen-2-bold" />
+                          </IconButton>
+                        </Card>
+                      ))}
+                  </div>
                 );
               })}
           </div>

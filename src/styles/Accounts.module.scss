@@ -1,5 +1,9 @@
 @import './variables.scss';
 
+.root {
+  margin-bottom: 60px;
+}
+
 .headerSection {
   display: flex;
   align-items: center;
@@ -26,6 +30,11 @@
   box-shadow: $box-shadow;
   background: rgb(255 255 255 / 31%);
   cursor: pointer;
+}
+
+.accountName {
+  font-weight: bold;
+  display: flex;
 }
 
 @media screen and (min-width: 768px) {

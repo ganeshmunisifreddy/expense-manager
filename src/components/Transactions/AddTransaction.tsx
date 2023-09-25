@@ -28,7 +28,6 @@ const FIELDS = [
     type: "number",
     placeholder: "Enter Amount",
     name: "amount",
-    fullWidth: true,
     required: true,
   },
   {
@@ -36,15 +35,18 @@ const FIELDS = [
     type: "text",
     placeholder: "Enter description",
     name: "description",
-    fullWidth: true,
+    required: true,
+  },
+  {
+    label: "Mode of payment",
+    type: "select",
+    name: "modeOfPayment",
     required: true,
   },
   {
     label: "Account",
     type: "select",
-    placeholder: "Enter Account",
     name: "accountId",
-    fullWidth: true,
     required: true,
   },
   {
@@ -52,7 +54,6 @@ const FIELDS = [
     type: "date",
     placeholder: "",
     name: "date",
-    fullWidth: true,
     required: true,
   },
   {
@@ -60,7 +61,6 @@ const FIELDS = [
     type: "time",
     placeholder: "",
     name: "time",
-    fullWidth: true,
     required: true,
   },
 ];
@@ -81,6 +81,7 @@ const AddTransaction = (props: any) => {
   const [newTransaction, setNewTransaction] = useState<any>({
     amount: "",
     description: "",
+    modeOfPayment: "",
     accountId: "",
     date: format(new Date(), "yyyy-MM-dd"),
     time: format(new Date(), "HH:mm"),
@@ -88,18 +89,15 @@ const AddTransaction = (props: any) => {
 
   const txnCollectionRef = collection(db, "expenses");
 
-  useEffect(() => {
-    const transaction = transactions.find((item: any) => item.id === transactionId);
-    if (transaction) {
-      setNewTransaction(transaction);
-    }
-  }, [transactionId, transactions]);
-
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     const obj = {
       ...newTransaction,
       [name]: value,
+      ...(name === "modeOfPayment" &&
+        accounts[value]?.defaultBankAccount && {
+          accountId: accounts[value]?.defaultBankAccount,
+        }),
     };
     setNewTransaction(obj);
   };
@@ -109,6 +107,7 @@ const AddTransaction = (props: any) => {
     setNewTransaction({
       amount: "",
       description: "",
+      modeOfPayment: "",
       accountId: "",
       date: format(new Date(), "yyyy-MM-dd"),
       time: format(new Date(), "HH:mm"),
@@ -124,6 +123,8 @@ const AddTransaction = (props: any) => {
   const handleSave = async (e: any) => {
     e.preventDefault();
     const txn = trimSpaces(newTransaction);
+    // console.log(txn);
+    // return;
     toggleLoading(true);
     try {
       if (transactionId) {
@@ -156,6 +157,13 @@ const AddTransaction = (props: any) => {
       toggleLoading(false);
     }
   };
+
+  useEffect(() => {
+    const transaction = transactions.find((item: any) => item.id === transactionId);
+    if (transaction) {
+      setNewTransaction(transaction);
+    }
+  }, [transactionId, transactions]);
 
   return (
     <Dialog
@@ -195,11 +203,24 @@ const AddTransaction = (props: any) => {
                       <MenuItem value="">
                         <em>None</em>
                       </MenuItem>
-                      {Object.keys(accounts).map((key) => (
-                        <MenuItem key={key} value={key}>
-                          {accounts[key].name}
-                        </MenuItem>
-                      ))}
+                      {Object.keys(accounts).map((key) => {
+                        if (field.name === "modeOfPayment" && accounts[key].type !== "UPI") {
+                          return null;
+                        }
+                        if (field.name === "accountId" && accounts[key].type === "UPI") {
+                          return null;
+                        }
+                        if (newTransaction.modeOfPayment) {
+                          if (field.name === "accountId" && accounts[key].type !== "Bank") {
+                            return null;
+                          }
+                        }
+                        return (
+                          <MenuItem key={key} value={key}>
+                            {accounts[key].name}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                   </FormControl>
                 );
@@ -214,10 +235,10 @@ const AddTransaction = (props: any) => {
                     name={field.name}
                     value={newTransaction[field.name]}
                     onChange={handleChange}
-                    fullWidth={field.fullWidth}
                     required={field.required}
                     autoComplete="off"
                     variant="standard"
+                    fullWidth
                   />
                 </div>
               );

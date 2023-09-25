@@ -92,8 +92,8 @@ const MyExpenses: NextPage = () => {
       <PrivateLayout>
         <Container className={styles.container}>
           <Head>
-            <title>Expense Manager</title>
-            <meta name="description" content="Expense Manager - Nine Technology" />
+            <title>Xpense Tracker</title>
+            <meta name="description" content="Xpense Tracker - Nine Technology" />
           </Head>
 
           {isLoading && <Loader fullScreen />}

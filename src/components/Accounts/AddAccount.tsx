@@ -19,24 +19,7 @@ import Iconify from "../Iconify";
 import Transition from "../Trasition";
 import { useAuth } from "../../contexts/AuthContext";
 
-const FIELDS = [
-  {
-    label: "Name",
-    type: "text",
-    placeholder: "Enter Account Name",
-    name: "name",
-    fullWidth: true,
-    required: true,
-  },
-  {
-    label: "Type",
-    type: "select",
-    name: "type",
-    fullWidth: true,
-    required: true,
-    values: ["Bank", "UPI", "Credit Card", "Wallet", "Cash", "Debit Card"],
-  },
-];
+const accountTypes: any = ["Bank", "UPI", "Credit", "Wallet", "Cash"];
 
 const AddAccount = (props: any) => {
   const { open, onClose, onSave, accountId } = props;
@@ -44,6 +27,7 @@ const AddAccount = (props: any) => {
   const [newAccount, setNewAccount] = useState<any>({
     name: "",
     type: "",
+    defaultBankAccount: "",
   });
 
   const { accounts }: any = useAuth();
@@ -62,6 +46,7 @@ const AddAccount = (props: any) => {
     setNewAccount({
       name: "",
       type: "",
+      defaultBankAccount: "",
     });
   };
 
@@ -73,7 +58,7 @@ const AddAccount = (props: any) => {
 
   useEffect(() => {
     if (accountId) {
-      setNewAccount({ name: "", type: "", ...accounts[accountId] });
+      setNewAccount({ name: "", type: "", defaultBankAccount: "", ...accounts[accountId] });
     }
   }, [accountId, accounts]);
 
@@ -95,49 +80,55 @@ const AddAccount = (props: any) => {
         </AppBar>
         <div className={styles.formContainer}>
           <div className={styles.formFields}>
-            {FIELDS.map((field: any, index: number) => {
-              if (field.type === "select") {
-                return (
-                  <FormControl
-                    variant="standard"
-                    className={styles.field}
-                    required={field.required}
-                    key={field.label + "-" + index}>
-                    <InputLabel>{field.label}</InputLabel>
-                    <Select
-                      value={newAccount[field.name]}
-                      name={field.name}
-                      onChange={handleChange}>
-                      <MenuItem value="">
-                        <em>None</em>
+            <div className={styles.field}>
+              <TextField
+                size="small"
+                label="Name"
+                type="text"
+                placeholder="Enter account name"
+                name="name"
+                value={newAccount.name}
+                onChange={handleChange}
+                autoComplete="off"
+                variant="standard"
+                fullWidth
+                required
+              />
+            </div>
+            <FormControl variant="standard" className={styles.field} required>
+              <InputLabel>Type</InputLabel>
+              <Select value={newAccount.type} name="type" onChange={handleChange}>
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {accountTypes.map((val: string) => (
+                  <MenuItem key={val} value={val}>
+                    {val}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {newAccount.type === "UPI" && (
+              <FormControl variant="standard" className={styles.field}>
+                <InputLabel>Default Bank Account</InputLabel>
+                <Select
+                  value={newAccount.defaultBankAccount}
+                  name="defaultBankAccount"
+                  onChange={handleChange}>
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {Object.keys(accounts).map((key: string) => {
+                    if (accounts[key].type !== "Bank") return null;
+                    return (
+                      <MenuItem key={key} value={key}>
+                        {accounts[key].name}
                       </MenuItem>
-                      {field?.values.map((val: string) => (
-                        <MenuItem key={val} value={val}>
-                          {val}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                );
-              }
-              return (
-                <div className={styles.field} key={field.label + "-" + index}>
-                  <TextField
-                    size="small"
-                    label={field.label}
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    name={field.name}
-                    value={newAccount[field.name]}
-                    onChange={handleChange}
-                    fullWidth={field.fullWidth}
-                    required={field.required}
-                    autoComplete="off"
-                    variant="standard"
-                  />
-                </div>
-              );
-            })}
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            )}
           </div>
         </div>
       </form>

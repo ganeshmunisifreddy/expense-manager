@@ -187,7 +187,7 @@ const Groups: NextPage = () => {
       <PrivateLayout>
         <Container className={styles.container}>
           <Head>
-            <title>Groups | Expense Manager</title>
+            <title>Groups | Xpense Tracker</title>
           </Head>
 
           {isLoading && <Loader fullScreen />}

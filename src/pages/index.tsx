@@ -104,7 +104,7 @@ const Login = () => {
   return (
     <div className={styles.root}>
       <Head>
-        <title>Login - Expense Manager</title>
+        <title>Login - Xpense Tracker</title>
       </Head>
       <div className={styles.logoContainer}>
         <Logo />

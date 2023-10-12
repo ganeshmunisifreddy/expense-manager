@@ -72,6 +72,8 @@ const Transactions = (props: any) => {
     setIsOpen(true);
   };
 
+  console.log(data);
+
   return (
     <>
       {isLoading && <Loader fullScreen />}
@@ -101,7 +103,7 @@ const Transactions = (props: any) => {
                         </Typography>
                       </div>
                     )}
-                    {txn.account && !selectedGroup && (
+                    {txn.accountId && !selectedGroup && (
                       <div className={styles.account}>
                         <Typography className={styles.accountLabel}>
                           <Iconify icon="ion:card" width={14} sx={{ mr: 0.5 }} />

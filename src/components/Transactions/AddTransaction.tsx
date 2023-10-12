@@ -41,7 +41,7 @@ const FIELDS = [
     label: "Mode of payment",
     type: "select",
     name: "modeOfPayment",
-    required: true,
+    required: false,
   },
   {
     label: "Account",

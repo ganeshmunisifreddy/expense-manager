@@ -27,8 +27,9 @@
   flex-direction: row;
   justify-content: space-between;
   border-radius: 12px;
-  box-shadow: $box-shadow;
-  background: rgb(255 255 255 / 31%);
+  background: rgb(146 151 179 / 13%);
+  box-shadow: none;
+  color: #f5f7f9;
   cursor: pointer;
 }
 
@@ -42,13 +43,5 @@
     top: 16px;
     border-radius: 16px;
     margin: 16px 16px 0 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .accountCard {
-    background: rgb(146 151 179 / 13%);
-    box-shadow: none;
-    color: #f5f7f9;
   }
 }

@@ -14,8 +14,7 @@
   flex-shrink: 0;
   cursor: pointer;
   border: 2px solid transparent;
-  background-color: rgb(255 255 255 / 31%);
-  ;
+  background-color: rgba(16 18 27 / 40%);
 
   &:hover {
     border: 2px solid $primary-color;
@@ -86,12 +85,5 @@
 @media screen and (max-width: 320px) {
   .formFields {
     min-width: auto;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .groupCard {
-    //background-color: #2b2d42;
-    background-color: rgba(16 18 27 / 40%);
   }
 }

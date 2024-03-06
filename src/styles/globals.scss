@@ -5,6 +5,7 @@
   user-select: none;
   font-family: 'Public Sans',
     sans-serif;
+  box-shadow: none;
 }
 
 html,
@@ -24,7 +25,7 @@ body {
 }
 
 .app {
-  background-color: rgb(255 255 255 / 31%);
+  background-color: rgba(16 18 27 / 40%);
   backdrop-filter: blur(20px);
   height: 100vh;
   height: 100dvh;
@@ -38,6 +39,24 @@ a {
 
 input {
   user-select: auto;
+}
+
+a,
+input,
+p,
+label,
+div,
+svg {
+  color: #f5f7f9 !important;
+}
+
+div,
+button {
+  box-shadow: none !important;
+}
+
+fieldset {
+  border-color: #f5f7f9 !important;
 }
 
 .flex {
@@ -103,6 +122,47 @@ input[type=number] {
   overflow: hidden;
 }
 
+.MuiInputBase-root {
+  &:before {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+  &:hover:not(.Mui-disabled, .Mui-error):before {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+  }
+}
+
+.MuiMenuItem-root {
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  &.Mui-selected {
+    background-color: $primary-color;
+  }
+}
+
+.MuiPaper-root {
+  background-color: #2b2d42;
+}
+
+.MuiMenu-paper {
+  background-color: #0f0123;
+}
+
+.MuiAppBar-root {
+  background-color: #000000;
+}
+
+.MuiDialog-paper {
+  background: rgba(17, 17, 17, 95%);
+
+  .MuiInputBase-input:disabled {
+    color: rgb(255 255 255 / 60%) !important;
+    -webkit-text-fill-color: rgb(255 255 255 / 60%);
+  }
+}
+
 @media screen and (min-width: 768px) {
   .app {
     margin: 16px;
@@ -115,81 +175,5 @@ input[type=number] {
     height: 80%;
     width: 80%;
     margin-left: 10%;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-
-  // html,
-  // body {
-  //   background-color: #161c24;
-  //   color: #f5f7f9;
-  // }
-
-  .app {
-    background-color: rgba(16 18 27 / 40%);
-  }
-
-  * {
-    box-shadow: none;
-  }
-
-  a,
-  input,
-  p,
-  label,
-  div,
-  svg {
-    color: #f5f7f9 !important;
-  }
-
-  div,
-  button {
-    box-shadow: none !important;
-  }
-
-  fieldset {
-    border-color: #f5f7f9 !important;
-  }
-
-  .MuiInputBase-root {
-    &:before {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    }
-
-    &:hover:not(.Mui-disabled, .Mui-error):before {
-      border-bottom: 2px solid rgba(255, 255, 255, 0.8);
-    }
-  }
-
-  .MuiMenuItem-root {
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.4);
-    }
-
-    &.Mui-selected {
-      background-color: $primary-color;
-    }
-  }
-
-  .MuiPaper-root {
-    background-color: #2b2d42;
-  }
-
-  .MuiMenu-paper {
-    background-color: #0f0123;
-  }
-
-  .MuiAppBar-root {
-    background-color: #000000;
-  }
-
-  .MuiDialog-paper {
-    background: rgba(17, 17, 17, 95%);
-
-    .MuiInputBase-input:disabled {
-      color: rgb(255 255 255 / 60%) !important;
-      -webkit-text-fill-color: rgb(255 255 255 / 60%);
-    }
   }
 }

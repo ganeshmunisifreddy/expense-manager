@@ -1,6 +1,6 @@
 .overlay {
   position: fixed;
-  background: rgb(255 255 255 / 50%);
+  background-color: #000000bf;
   top: 0;
   left: 0;
   height: 100%;
@@ -10,11 +10,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-
-@media (prefers-color-scheme: dark) {
-  .overlay {
-    background-color: #000000bf;
-  }
 }

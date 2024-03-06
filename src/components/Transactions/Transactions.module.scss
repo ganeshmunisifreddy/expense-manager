@@ -16,8 +16,9 @@
   flex-direction: row;
   justify-content: space-between;
   border-radius: 12px;
-  box-shadow: $box-shadow;
-  background: rgb(255 255 255 / 31%);
+  background: rgb(146 151 179 / 13%);
+  box-shadow: none;
+  color: #f5f7f9;
 }
 
 .description {
@@ -95,6 +96,15 @@
   border-radius: 4px;
 }
 
+.form {
+  background-color: #252525;
+  height: 100%;
+
+  input {
+    color-scheme: dark;
+  }
+}
+
 @media screen and (max-width: 375px) {
   .formFields {
     min-width: 240px;
@@ -111,20 +121,5 @@
   .fabBtn {
     right: 16px;
     bottom: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .transaction {
-    //background-color: #2b2d42;
-    background: rgb(146 151 179 / 13%);
-    box-shadow: none;
-    color: #f5f7f9;
-  }
-
-  .form {
-    input {
-      color-scheme: dark;
-    }
   }
 }

@@ -25,7 +25,8 @@
   padding: 24px;
   z-index: 2;
   position: relative;
-  background-color: #ffffff80;
+  background-color: #2b2d4280;
+  color: #f5f7f9;
 }
 
 .title {
@@ -46,15 +47,8 @@
   margin-top: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .loginCard {
-    background-color: #2b2d4280;
-    color: #f5f7f9;
-  }
-
-  .inputField {
-    input:disabled {
-      -webkit-text-fill-color: #9d9d9d;
-    }
+.inputField {
+  input:disabled {
+    -webkit-text-fill-color: #9d9d9d;
   }
 }
